@@ -9,6 +9,14 @@ export const findUserByEmail = async (email) => {
   }
 };
 
+export const findUserById = async (id) => {
+  try{
+    return await User.findById(id);
+  } catch (error) {
+    throw new Error('Error finding user by email');
+  }
+}
+
 // Tạo người dùng mới và lưu vào MongoDB
 export const createUser = async (userData) => {
   try {
