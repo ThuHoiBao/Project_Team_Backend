@@ -32,7 +32,7 @@ export const loginUser = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
+//
 // Quên mật khẩu và gửi OTP
 export const forgotPassword = async (req, res) => {
   try {
