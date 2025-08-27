@@ -1,5 +1,5 @@
 // controller/authController.js
-import { registerUserService, loginUserService, forgotPasswordService, verifyOtpService } from '../service/authService.ts';
+import { registerUserService, loginUserService, forgotPasswordService, verifyOtpService, getMyInfoService } from '../service/authService.ts';
 
 // Gửi OTP và đăng ký người dùng
 export const registerUser = async (req, res) => {
@@ -42,3 +42,15 @@ export const forgotPassword = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+// Lấy thông tin cá nhân
+export const getMyInfo = async (req, res)=>{
+  try{
+    const userId = req.user.id
+    const response = await getMyInfoService(userId);
+    res.json(response)
+  }
+  catch (error){
+    res.status(500).json({ message: error.message });
+  }
+}

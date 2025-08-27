@@ -2,7 +2,7 @@ import bcrypt from "bcryptjs";
 import OTP from "otp-generator";
 import jwt from "jsonwebtoken";
 import { RegisterUserRequestDTO } from "../dto/requestDTO/registerUserRequestDTO.ts";
-import { isEmailExist, createUser, findUserByEmail } from "../repository/userRepository.ts";
+import { isEmailExist, createUser, findUserByEmail, findUserById } from "../repository/userRepository.ts";
 
 import  sendEmail  from "../utils/mailUtils.ts";  // Import mail utils
 
@@ -99,4 +99,14 @@ export const forgotPasswordService = async (data) => {
 
   // return { message: 'OTP sent to your email' };
 };
+
+
+// Lấy thông tin cá nhân
+export const getMyInfoService = async(userId: string)=>{
+  const user = await findUserById(userId);
+  if (!user) throw new Error("User not found");
+  // Không trả password ra ngoài
+  const {password, ...restInfo} = user.toObject ? user.toObject() : user;
+  return restInfo;
+}
 
