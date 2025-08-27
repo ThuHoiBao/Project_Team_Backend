@@ -1,0 +1,11 @@
+{
+  "development": {
+    "MONGO_URI": "mongodb://127.0.0.1:27017/DB_Futu"
+  },
+  "test": {
+    "MONGO_URI": "mongodb://127.0.0.1:27017/myapp_test"
+  },
+  "production": {
+    "MONGO_URI": "mongodb+srv://username:password@cluster0.mongodb.net/myapp"
+  }
+}
