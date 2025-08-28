@@ -1,5 +1,12 @@
 // controller/authController.js
-import { registerUserService, loginUserService, forgotPasswordService, verifyOtpService } from '../service/authService.ts';
+import {
+  registerUserService,
+  loginUserService,
+  forgotPasswordService,
+  verifyOtpService,
+  resetPasswordService,
+  verifyOtpForResetService
+} from "../service/authService.ts";
 
 // Gửi OTP và đăng ký người dùng
 export const registerUser = async (req, res) => {
@@ -23,6 +30,14 @@ export const verifyOtp = async (req, res) => {
   }
 };
 
+export const verifyOtpForReset = async (req, res) => {
+  try {
+    const response = await verifyOtpForResetService(req.body);
+    return res.status(200).json(response);
+  } catch (error) {
+    return res.status(400).json({ message: error.message });
+  }
+}
 // Đăng nhập người dùng
 export const loginUser = async (req, res) => {
   try {
@@ -37,6 +52,15 @@ export const loginUser = async (req, res) => {
 export const forgotPassword = async (req, res) => {
   try {
     const response = await forgotPasswordService(req.body);
+    res.json(response);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const resetPassword = async (req, res) => {
+  try {
+    const response = await resetPasswordService(req.body);
     res.json(response);
   } catch (error) {
     res.status(500).json({ message: error.message });
