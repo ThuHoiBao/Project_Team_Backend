@@ -1,5 +1,5 @@
 // controller/authController.js
-import { registerUserService, loginUserService, forgotPasswordService, verifyOtpService, getMyInfoService } from '../service/authService.ts';
+import { registerUserService, loginUserService, forgotPasswordService, verifyOtpService, getMyInfoService, updateMyInfoService } from '../service/authService.ts';
 
 // Gửi OTP và đăng ký người dùng
 export const registerUser = async (req, res) => {
@@ -50,7 +50,32 @@ export const getMyInfo = async (req, res)=>{
     const response = await getMyInfoService(userId);
     res.json(response)
   }
-  catch (error){
-    res.status(500).json({ message: error.message });
+  catch (error) {
+    console.error("Error updating user:", error.message);
+
+    if (error.message) {
+      return res.status(404).json({ message: error.message });
+    }
+
+    // Lỗi khác
+    return res.status(500).json({ message: "Server error" });
+  }
+}
+
+// Chỉnh sửa thông tin cá nhân
+export const updateMyInfo = async(req, res) =>{
+  try{
+    const userInfo = req.body;
+    const updatedUser = await updateMyInfoService(userInfo);
+    res.json(updatedUser);
+  }catch (error) {
+    console.error("Error updating user:", error.message);
+
+    if (error.message) {
+      return res.status(404).json({ message: error.message });
+    }
+
+    // Lỗi khác
+    return res.status(500).json({ message: "Server error" });
   }
 }

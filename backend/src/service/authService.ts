@@ -2,7 +2,7 @@ import bcrypt from "bcryptjs";
 import OTP from "otp-generator";
 import jwt from "jsonwebtoken";
 import { RegisterUserRequestDTO } from "../dto/requestDTO/registerUserRequestDTO.ts";
-import { isEmailExist, createUser, findUserByEmail, findUserById } from "../repository/userRepository.ts";
+import { isEmailExist, createUser, findUserByEmail, findUserById, updateUserInfo } from "../repository/userRepository.ts";
 
 import  sendEmail  from "../utils/mailUtils.ts";  // Import mail utils
 
@@ -110,3 +110,11 @@ export const getMyInfoService = async(userId: string)=>{
   return restInfo;
 }
 
+// Sửa thông tin cá nhân
+export const updateMyInfoService = async(payload: {email: string, firstName: string, lastName: string, 
+        address: string, phoneNumber: string}) =>{
+  const updatedUser = await updateUserInfo(payload);
+  if (!updatedUser) throw new Error("User not found");
+  const {password, ...restInfo} = updatedUser.toObject ? updatedUser.toObject() : updatedUser;
+  return restInfo;
+}
