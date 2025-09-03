@@ -2,11 +2,15 @@ import bcrypt from "bcryptjs";
 import OTP from "otp-generator";
 import jwt from "jsonwebtoken";
 import { RegisterUserRequestDTO } from "../dto/requestDTO/registerUserRequestDTO.ts";
+
 import {
   isEmailExist,
   createUser,
   findUserByEmail,
+  findUserById, 
+  updateUserInfo
 } from "../repository/userRepository.ts";
+
 
 import sendEmail from "../utils/mailUtils.ts"; // Import mail utils
 
@@ -106,6 +110,7 @@ export const resetPasswordService = async (data) => {
   return { message: "Password changed successfully" };
 };
 
+
 export const verifyOtpForResetService = async (data) => {
   const { email, otp } = data;
 
@@ -118,3 +123,23 @@ export const verifyOtpForResetService = async (data) => {
     throw new Error("Invalid OTP sent from service");
   }
 };
+
+
+// Lấy thông tin cá nhân
+export const getMyInfoService = async(userId: string)=>{
+  const user = await findUserById(userId);
+  if (!user) throw new Error("User not found");
+  // Không trả password ra ngoài
+  const {password, ...restInfo} = user.toObject ? user.toObject() : user;
+  return restInfo;
+}
+
+// Sửa thông tin cá nhân
+export const updateMyInfoService = async(payload: {email: string, firstName: string, lastName: string, 
+        address: string, phoneNumber: string}) =>{
+  const updatedUser = await updateUserInfo(payload);
+  if (!updatedUser) throw new Error("User not found");
+  const {password, ...restInfo} = updatedUser.toObject ? updatedUser.toObject() : updatedUser;
+  return restInfo;
+}
+
