@@ -8,6 +8,9 @@ import protectedRoutes from './route/protectedRoute.ts';
 import upLoadImage from './route/uploadImageRoute.ts'
 import path from 'path';
 import { fileURLToPath } from 'url';
+import {seedProducts} from './seeders/product.seed.ts';
+import mongoose from 'mongoose';
+
 
 // Tạo __dirname (vì dùng ES module)
 const __filename = fileURLToPath(import.meta.url);
@@ -39,3 +42,5 @@ const PORT = process.env.PORT || 8088;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+
