@@ -7,11 +7,9 @@ import {
   isEmailExist,
   createUser,
   findUserByEmail,
-  findUserById, 
-  updateUserInfo
 } from "../repository/userRepository.ts";
 
-
+import InvalidatedToken from "../models/invalidatedToken.ts";
 import sendEmail from "../utils/mailUtils.ts"; // Import mail utils
 
 /** Lưu OTP tạm; thực tế nên dùng Redis */
@@ -80,8 +78,11 @@ export const loginUserService = async (payload: {
   const ok = await bcrypt.compare(payload.password, user.password);
   if (!ok) throw new Error("Invalid credentials");
 
+  const jti = crypto.randomUUID();
+
   const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET as string, {
     expiresIn: "1h",
+    jwtid: jti,
   });
 
   return { token };
@@ -124,22 +125,15 @@ export const verifyOtpForResetService = async (data) => {
   }
 };
 
+export const logoutUserService = async (decodedToken) => {
+  const jti = decodedToken.jti;
+  const exp = decodedToken.exp * 1000; // convert to ms
 
-// Lấy thông tin cá nhân
-export const getMyInfoService = async(userId: string)=>{
-  const user = await findUserById(userId);
-  if (!user) throw new Error("User not found");
-  // Không trả password ra ngoài
-  const {password, ...restInfo} = user.toObject ? user.toObject() : user;
-  return restInfo;
-}
+  const invalidated = new InvalidatedToken({
+    id: jti,
+    expiryTime: new Date(exp),
+  });
 
-// Sửa thông tin cá nhân
-export const updateMyInfoService = async(payload: {email: string, firstName: string, lastName: string, 
-        address: string, phoneNumber: string}) =>{
-  const updatedUser = await updateUserInfo(payload);
-  if (!updatedUser) throw new Error("User not found");
-  const {password, ...restInfo} = updatedUser.toObject ? updatedUser.toObject() : updatedUser;
-  return restInfo;
-}
-
+  await invalidated.save();
+  return { message: "Logged out successfully" };
+};
