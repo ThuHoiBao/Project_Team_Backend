@@ -2,7 +2,6 @@ import expressPkg from 'express';
 import { uploadImageToGCS } from '../service/uploadImageService.ts';
 
 
-
 // Controller xử lý upload
 export const uploadImage = async (req: typeof expressPkg.request, res: typeof expressPkg.response) => {
   try {
