@@ -28,24 +28,36 @@ export const createUser = async (userData) => {
   }
 };
 
-export const updateUserInfo = async ({ email, ...updateData }) =>{
-  try{
-     const updatedUser = await User.findOneAndUpdate(
-      { email },         // điều kiện tìm kiếm
-      updateData,        // data update (không có email)
-      { new: true, runValidators: true } //thêm new: true, thì nó sẽ trả về document sau khi update.
+export const updateUserInfo = async (id, updateData) => {
+  try {
+    const updatedUser = await User.findOneAndUpdate(
+      { _id: id },  
+      updateData,
+      { new: true, runValidators: true }
     );
     return updatedUser;
-  }catch (error) {
-    throw new Error('Error updating user');
+  } catch (error) {
+    throw new Error("Error updating user");
   }
-}
-
+};
 
 export const isEmailExist = async (email) => {
   try {
     return await User.exists({ email });
   } catch (error) {
     throw new Error('Error checking email existence');
+  }
+};
+
+export const updateMyAvatar = async (id, image) => {
+  try {
+    const updatedUser = await User.findOneAndUpdate(
+      { _id: id },  
+      {image},
+      { new: true, runValidators: true }
+    );
+    return updatedUser;
+  } catch (error) {
+    throw new Error("Error updating user");
   }
 };

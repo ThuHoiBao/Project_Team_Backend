@@ -7,8 +7,7 @@ import {
   verifyOtpService,
   resetPasswordService,
   verifyOtpForResetService,
-  getMyInfoService, 
-  updateMyInfoService
+  logoutUserService,
 } from "../service/authService.ts";
 
 
@@ -72,39 +71,13 @@ export const resetPassword = async (req, res) => {
   }
 };
 
-// Lấy thông tin cá nhân
-export const getMyInfo = async (req, res)=>{
-  try{
-    const userId = req.user.id
-    const response = await getMyInfoService(userId);
-    res.json(response)
+export const logout = async (req, res) => {
+  try {
+    const decoded = req.user; // req.user đã được verifyToken gán
+    const result = await logoutUserService(decoded);
+    res.json(result);
+  } catch (err) {
+    console.error("Logout error:", err);
+    res.status(500).json({ message: "Logout failed" });
   }
-  catch (error) {
-    console.error("Error updating user:", error.message);
-
-    if (error.message) {
-      return res.status(404).json({ message: error.message });
-    }
-
-    // Lỗi khác
-    return res.status(500).json({ message: "Server error" });
-  }
-}
-
-// Chỉnh sửa thông tin cá nhân
-export const updateMyInfo = async(req, res) =>{
-  try{
-    const userInfo = req.body;
-    const updatedUser = await updateMyInfoService(userInfo);
-    res.json(updatedUser);
-  }catch (error) {
-    console.error("Error updating user:", error.message);
-
-    if (error.message) {
-      return res.status(404).json({ message: error.message });
-    }
-
-    // Lỗi khác
-    return res.status(500).json({ message: "Server error" });
-  }
-}
+};
