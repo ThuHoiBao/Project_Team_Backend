@@ -6,9 +6,6 @@ export interface IImageProduct extends Document{
 
 const ImageProductSchema: Schema = new Schema<IImageProduct>(
     {
-        id:{
-            type: Number, unique: true
-        },
         imageProduct: {
             type: String, 
             required: true,

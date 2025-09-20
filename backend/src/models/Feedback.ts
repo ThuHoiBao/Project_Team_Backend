@@ -1,22 +1,17 @@
 import mongoose, { Schema, Document } from "mongoose";
 
 export interface IFeedback extends Document {
-  user: mongoose.Types.ObjectId;
-  product: mongoose.Types.ObjectId;
+  OrderItem: mongoose.Types.ObjectId;
   rating: number;      
   comment: string;
+  date: Date;
 }
 
 const FeedbackSchema: Schema = new Schema<IFeedback>(
   {
-    user: {
+    OrderItem: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-    },
-    product: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Product",
+      ref: "OrderItem",
       required: true,
     },
     rating: {
@@ -29,6 +24,7 @@ const FeedbackSchema: Schema = new Schema<IFeedback>(
       type: String,
       trim: true,
     },
+    date: { type: Date, default: Date.now },
   },
   {
     timestamps: true, 

@@ -1,7 +1,5 @@
 import mongoose, {Schema, Document, Types} from "mongoose";
 
-
-
 export interface IProduct extends Document {// Typescript check datatype
     productName: string;
     listImage?: Types.ObjectId[];
@@ -12,7 +10,6 @@ export interface IProduct extends Document {// Typescript check datatype
     status: boolean;
     createDate?: Date;
     updateDate?: Date;
-    feedbacks: mongoose.Types.ObjectId[];
 }
 
 const ProductSchema: Schema = new Schema<IProduct>( //Define data structure MongoDB
@@ -29,12 +26,6 @@ const ProductSchema: Schema = new Schema<IProduct>( //Define data structure Mong
               ref: "Category",
               required: true
         },
-         feedbacks: [ 
-        {
-            type: mongoose.Types.ObjectId,
-            ref: "Feedback"
-        }
-        ],
         description: {type: String},
         quantity: {type: Number, required: true},
         price: { type: Number, required: true },

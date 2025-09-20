@@ -37,12 +37,10 @@ const UserSchema = new mongoose.Schema(
         type: mongoose.Types.ObjectId,
         ref: "Cart"
       }, 
-     feedbacks: [  
-      {
+     coin: {
         type: mongoose.Types.ObjectId,
-        ref: "Feedback"
-      }
-    ],  
+        ref: "Coin"
+     }
   },
   { timestamps: true }
 );
