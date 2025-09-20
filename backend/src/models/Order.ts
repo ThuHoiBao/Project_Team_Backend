@@ -13,6 +13,9 @@ export interface IOrder extends Document {
     user: mongoose.Types.ObjectId;
     orderStatus: OrderStatus;
     orderDate: Date;
+    payment: mongoose.Types.ObjectId;
+    addressDelivery: mongoose.Types.ObjectId;
+    coupon: mongoose.Types.ObjectId;
 }
 
 const OrderSchema: Schema = new Schema<IOrder>(
@@ -34,6 +37,9 @@ const OrderSchema: Schema = new Schema<IOrder>(
       default: OrderStatus.WAITING_CONFIRMATION,
     },
     orderDate: { type: Date, default: Date.now },
+    payment: { type: Schema.Types.ObjectId, ref: "Payment", required: true },
+    addressDelivery:  { type: Schema.Types.ObjectId, ref: "AddressDelivery", required: true },
+    coupon:  { type: Schema.Types.ObjectId, ref: "Coupon" },
   },
   {
      timestamps: true

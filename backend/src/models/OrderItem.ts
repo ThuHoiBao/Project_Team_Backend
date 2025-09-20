@@ -6,6 +6,7 @@ export interface IOrderItem extends Document {
   price: number;
   size: string;
   quantity: number;
+  feedback: mongoose.Types.ObjectId;
 }
 
 const OrderItemSchema = new Schema<IOrderItem>(
@@ -15,8 +16,15 @@ const OrderItemSchema = new Schema<IOrderItem>(
     price: { type: Number, required: true },
     size: { type: String, required: true },
     quantity: { type: Number, required: true },
+    feedback: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Feedback",
+      required: true,
+    },
   },
-  { timestamps: true }
+  { 
+    timestamps: true 
+  }
 );
 
 
