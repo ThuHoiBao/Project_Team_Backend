@@ -1,17 +1,10 @@
 import mongoose, {Schema, Document, Types} from "mongoose";
 
-export enum Size {
-  S = "S",
-  M = "M",
-  L = "L",
-  XL = "XL",
-  XXL = "XXL"
-}
+
 
 export interface IProduct extends Document {// Typescript check datatype
     productName: string;
     listImage?: Types.ObjectId[];
-    size?: string;
     description?: string;
     quantity: number;
     price: number;
@@ -25,11 +18,6 @@ export interface IProduct extends Document {// Typescript check datatype
 const ProductSchema: Schema = new Schema<IProduct>( //Define data structure MongoDB
     {
         productName: {type: String, required: true},
-        size: {
-            type: String,
-            enum: Object.values(Size),
-            default: "M"
-        },
         listImage:[
           {
            type: mongoose.Schema.Types.ObjectId,

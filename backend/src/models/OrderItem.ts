@@ -4,6 +4,7 @@ export interface IOrderItem extends Document {
   order: mongoose.Types.ObjectId; // ref Order
   product: mongoose.Types.ObjectId; // ref Product
   price: number;
+  size: string;
   quantity: number;
 }
 
@@ -12,6 +13,7 @@ const OrderItemSchema = new Schema<IOrderItem>(
     order: { type: Schema.Types.ObjectId, ref: "Order", required: true },
     product: { type: Schema.Types.ObjectId, ref: "Product", required: true },
     price: { type: Number, required: true },
+    size: { type: String, required: true },
     quantity: { type: Number, required: true },
   },
   { timestamps: true }
