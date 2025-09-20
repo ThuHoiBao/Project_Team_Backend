@@ -1,0 +1,40 @@
+import mongoose, {Document, Model, Mongoose, Schema} from "mongoose";
+export interface ImageFeedbacktSchema extends Document{
+    feedback: mongoose.Types.ObjectId;
+    imageFeedback: string;
+}
+
+const ImageFeedbacktSchema: Schema = new Schema<ImageFeedbacktSchema>(
+    {
+        imageFeedback: {
+            type: String, 
+            required: true,
+        },
+        feedback: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "OrderItem",
+            required: true,
+        },
+    },
+    {
+        timestamps: true
+    }
+);
+
+ImageFeedbacktSchema.virtual("id").get(function (this: any) {
+  return this._id.toString();
+});
+
+ImageFeedbacktSchema.set("toJSON", {
+  virtuals: true,
+  versionKey: false,
+  transform: (_doc, ret) => {
+    delete ret._id;
+  },
+});
+
+
+export const ImageProduct: Model<ImageFeedbacktSchema> = mongoose.model<ImageFeedbacktSchema>(
+  "ImageProduct",
+  ImageFeedbacktSchema
+);
