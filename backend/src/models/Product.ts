@@ -1,20 +1,13 @@
-import { LargeNumberLike } from "crypto";
 import mongoose, {Schema, Document, Types} from "mongoose";
 
-export enum Size {
-  S = "S",
-  M = "M",
-  L = "L",
-  XL = "XL",
-  XXL = "XXL"
-}
+
 
 export interface IProduct extends Document {// Typescript check datatype
     productName: string;
     listImage?: Types.ObjectId[];
-    size?: string;
     description?: string;
     quantity: number;
+    price: number;
     category: mongoose.Types.ObjectId;
     status: boolean;
     createDate?: Date;
@@ -25,11 +18,6 @@ export interface IProduct extends Document {// Typescript check datatype
 const ProductSchema: Schema = new Schema<IProduct>( //Define data structure MongoDB
     {
         productName: {type: String, required: true},
-        size: {
-            type: String,
-            enum: Object.values(Size),
-            default: "M"
-        },
         listImage:[
           {
            type: mongoose.Schema.Types.ObjectId,
@@ -49,6 +37,7 @@ const ProductSchema: Schema = new Schema<IProduct>( //Define data structure Mong
         ],
         description: {type: String},
         quantity: {type: Number, required: true},
+        price: { type: Number, required: true },
         status: {type: Boolean, default: true},
         createDate: {type: Date, default: Date.now},
         updateDate: {type: Date, default: Date.now},

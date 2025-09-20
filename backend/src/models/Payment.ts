@@ -1,5 +1,4 @@
 import mongoose, { Document, Schema, Model } from "mongoose";
-import AutoIncrementFactory from "mongoose-sequence";
 
 export enum PaymentMethod {
   VNPAY = "VNPAY",
