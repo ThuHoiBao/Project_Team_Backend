@@ -1,4 +1,3 @@
-import { LargeNumberLike } from "crypto";
 import mongoose, {Schema, Document, Types} from "mongoose";
 
 export enum Size {
@@ -15,6 +14,7 @@ export interface IProduct extends Document {// Typescript check datatype
     size?: string;
     description?: string;
     quantity: number;
+    price: number;
     category: mongoose.Types.ObjectId;
     status: boolean;
     createDate?: Date;
@@ -49,6 +49,7 @@ const ProductSchema: Schema = new Schema<IProduct>( //Define data structure Mong
         ],
         description: {type: String},
         quantity: {type: Number, required: true},
+        price: { type: Number, required: true },
         status: {type: Boolean, default: true},
         createDate: {type: Date, default: Date.now},
         updateDate: {type: Date, default: Date.now},
