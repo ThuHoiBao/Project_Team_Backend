@@ -1,5 +1,6 @@
 
 import Product, { IProduct } from "../models/Product";
+import ProductSize from "../models/ProductSize";
 // import Category, { ICategory } from "../models/Category";
 import { ServiceResponse } from "../types/ServiceResponse";
 import mongoose, { Schema, Document, Types } from "mongoose";
@@ -56,3 +57,27 @@ export const findProductByCategoryIdService = async (id: string) => {
     };
   }
 };
+
+
+
+export const getSizebyProductIdService = async (id) => {
+  try {
+    const sizes = await ProductSize.find({ product: id })
+    if (!sizes || sizes.length === 0) {
+      return {
+        success: false,
+        message: "Size not found"
+      }
+    }
+    return {
+      success: true,
+      message: "Size found",
+      data: sizes
+    }
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error.message
+    }
+  }
+}
