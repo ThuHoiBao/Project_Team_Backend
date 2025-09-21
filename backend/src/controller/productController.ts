@@ -1,4 +1,4 @@
-import { productDetailService, findProductByCategoryIdService } from "../service/productService";
+import { productDetailService, findProductByCategoryIdService, getSizebyProductIdService } from "../service/productService";
 import { Request, Response } from "express";
 
 export const productDetail = async (req: Request, res: Response) => {
@@ -33,3 +33,18 @@ export const findProductByCategoryId = async (req: Request, res: Response) => {
     return res.status(500).json({ message: error.message });
   }
 };
+
+
+export const getSizebyProductId = async (req: Request, res: Response) => {
+  const {id} = req.params;
+  try{
+    const response = await getSizebyProductIdService(id);
+    if (!response.success) {
+      return res.status(404).json(response);
+    }
+
+    return res.status(200).json(response);
+  } catch (error: any) {
+    return res.status(500).json({ message: error.message });
+  }
+}
