@@ -1,16 +1,15 @@
-
+import { OrderItem } from "../models/OrderItem";
 import Product, { IProduct } from "../models/Product";
 import ProductSize from "../models/ProductSize";
 // import Category, { ICategory } from "../models/Category";
 import { ServiceResponse } from "../types/ServiceResponse";
 import mongoose, { Schema, Document, Types } from "mongoose";
 
-export const productDetailService = async (id: string): Promise<ServiceResponse<IProduct>> => {
+export const productDetailService = async (id: string) => {
   try {
     const product = await Product.findById(id)
       .populate("category", "categoryName")
-      .populate("listImage", "imageProduct")
-      .populate("feedbacks");
+      .populate("listImage", "imageProduct");
 
     if (!product) {
       return {
@@ -18,11 +17,18 @@ export const productDetailService = async (id: string): Promise<ServiceResponse<
         message: "Product not found"
       };
     }
-
+    const orderItems = await OrderItem.find({ product: id })
+      .populate({
+        path: "feedback",
+        model: "Feedback"
+      })
+    const feedbacks = orderItems
+      .map((oi) => oi.feedback)
+      .filter((fb) => fb != null);
     return {
       success: true,
       message: "Product found",
-      data: product
+      data: {product, feedbacks}
     };
   } catch (error: any) {
     return {
@@ -36,7 +42,7 @@ export const productDetailService = async (id: string): Promise<ServiceResponse<
 export const findProductByCategoryIdService = async (id: string) => {
   try {
 
-    const products = await Product.find({ category: id }).select("productName listImage")
+    const products = await Product.find({ category: id }).select("productName listImage price").populate("listImage")
 
     if (!products || products.length === 0) {
       return {
