@@ -1,6 +1,7 @@
 // config/configdb.ts
 import mongoose from "mongoose";
 import { seedProducts } from "../seeders/product.seed";
+import {seedDatabase}  from "../seeders/data.seed"
 
 const connectDB = async (): Promise<void> => {
   try {
@@ -11,6 +12,7 @@ const connectDB = async (): Promise<void> => {
 
     console.log("MongoDB connection established successfully.");
     // await seedProducts();
+    // await seedDatabase();
   } catch (error: any) {  // để TypeScript không báo lỗi khi log error
     console.log("Unable to connect to MongoDB:", error.message || error);
   }

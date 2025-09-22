@@ -19,7 +19,7 @@ const OrderItemSchema = new Schema<IOrderItem>(
     feedback: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Feedback",
-      required: true,
+      required: false,
     },
   },
   { 

@@ -10,11 +10,13 @@ export interface IProduct extends Document {// Typescript check datatype
     status: boolean;
     createDate?: Date;
     updateDate?: Date;
+    productSizes?: mongoose.Types.ObjectId[]; 
 }
 
 const ProductSchema: Schema = new Schema<IProduct>( //Define data structure MongoDB
     {
         productName: {type: String, required: true},
+        
         listImage:[
           {
            type: mongoose.Schema.Types.ObjectId,
@@ -32,7 +34,8 @@ const ProductSchema: Schema = new Schema<IProduct>( //Define data structure Mong
         status: {type: Boolean, default: true},
         createDate: {type: Date, default: Date.now},
         updateDate: {type: Date, default: Date.now},
-        
+        productSizes: [{ type: mongoose.Schema.Types.ObjectId, ref: "ProductSize" }] // Thêm trường productSizes
+
     },
     {
         timestamps: false
