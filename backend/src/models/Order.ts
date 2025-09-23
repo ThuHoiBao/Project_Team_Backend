@@ -1,11 +1,13 @@
 import mongoose, {Document, Schema, Model} from "mongoose";
 
 export enum OrderStatus {
-    WAITING_CONFIRMATION= "WAITING_CONFIRMATION",
+    ORDERED= "ORDERED",
     CONFIRMED = "CONFIRMED",
-    SHIPPING = "SHIPPING",
+    SHIPPED = "SHIPPED",
     COMPLETED = "COMPLETED",
-    CANCELLED = "CANCELLED" 
+    CANCELLED = "CANCELLED" ,
+    FEEDBACKED ="FEEDBACKED",
+
 }
 
 export interface IOrder extends Document {
@@ -13,6 +15,9 @@ export interface IOrder extends Document {
     user: mongoose.Types.ObjectId;
     orderStatus: OrderStatus;
     orderDate: Date;
+    payment: mongoose.Types.ObjectId;
+    addressDelivery: mongoose.Types.ObjectId;
+    coupon: mongoose.Types.ObjectId;
 }
 
 const OrderSchema: Schema = new Schema<IOrder>(
@@ -31,9 +36,12 @@ const OrderSchema: Schema = new Schema<IOrder>(
     orderStatus: {
       type: String,
       enum: Object.values(OrderStatus),
-      default: OrderStatus.WAITING_CONFIRMATION,
+      default: OrderStatus.ORDERED,
     },
     orderDate: { type: Date, default: Date.now },
+    payment: { type: Schema.Types.ObjectId, ref: "Payment",  },
+    addressDelivery:  { type: Schema.Types.ObjectId, ref: "AddressDelivery", required: true },
+    coupon:  { type: Schema.Types.ObjectId, ref: "Coupon" },
   },
   {
      timestamps: true

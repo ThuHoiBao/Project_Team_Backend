@@ -37,12 +37,10 @@ const UserSchema = new mongoose.Schema(
         type: mongoose.Types.ObjectId,
         ref: "Cart"
       }, 
-     feedbacks: [  
-      {
+     coin: {
         type: mongoose.Types.ObjectId,
-        ref: "Feedback"
-      }
-    ],  
+        ref: "Coin"
+     }
   },
   { timestamps: true }
 );
@@ -60,4 +58,6 @@ UserSchema.set("toJSON", {
   }
 });
 
-export default mongoose.model("User", UserSchema);
+const User = mongoose.models.User || mongoose.model("User", UserSchema);
+
+export default User;

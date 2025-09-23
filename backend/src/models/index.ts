@@ -1,11 +1,27 @@
 // models/index.js
 import mongoose from "mongoose";
-import User from "./user.js"; // import model User (Mongoose schema đã export)
 
-// Object db để gom tất cả model
-const db = {};
+import User from "./User.ts";
+import {Order} from "./Order.ts";
+import { OrderItem } from "./OrderItem.ts";
+import { AddressDelivery } from "./AddressDelivery.ts";
+import { Payment } from "./Payment.ts";
+import { Coupon } from "./Coupon.ts";
+import Product from "./Product.ts";
+import { ImageProduct } from "./ImageProduct.ts";
+// Object db gom tất cả model
+const db = {
+    mongoose,
+    User,
+    Order,
+    OrderItem,
+    AddressDelivery,
+    Payment,
+    Coupon,
+    Product,
+    ImageProduct
+};
 
-db.mongoose = mongoose;
-db.User = User;
+
 
 export default db;

@@ -1,9 +1,9 @@
 import mongoose, { Document, Schema, Model } from "mongoose";
-import AutoIncrementFactory from "mongoose-sequence";
 
 export enum PaymentMethod {
   VNPAY = "VNPAY",
   COD = "COD",
+  COIN = "COIN"
 }
 
 export interface IPayment extends Document {
