@@ -1,35 +1,24 @@
-import { LargeNumberLike } from "crypto";
 import mongoose, {Schema, Document, Types} from "mongoose";
-
-export enum Size {
-  S = "S",
-  M = "M",
-  L = "L",
-  XL = "XL",
-  XXL = "XXL"
-}
+import { removeVietnameseAccents } from "../utils/textUtils"; // Import function helper
 
 export interface IProduct extends Document {// Typescript check datatype
     productName: string;
+    productNameNormalized?: string; // Thêm field mới
     listImage?: Types.ObjectId[];
-    size?: string;
     description?: string;
+    descriptionNormalized?: string;
     quantity: number;
+    price: number;
     category: mongoose.Types.ObjectId;
     status: boolean;
     createDate?: Date;
     updateDate?: Date;
-    feedbacks: mongoose.Types.ObjectId[];
 }
 
 const ProductSchema: Schema = new Schema<IProduct>( //Define data structure MongoDB
     {
         productName: {type: String, required: true},
-        size: {
-            type: String,
-            enum: Object.values(Size),
-            default: "M"
-        },
+        productNameNormalized: {type: String}, // Thêm field mới
         listImage:[
           {
            type: mongoose.Schema.Types.ObjectId,
@@ -41,14 +30,10 @@ const ProductSchema: Schema = new Schema<IProduct>( //Define data structure Mong
               ref: "Category",
               required: true
         },
-         feedbacks: [ 
-        {
-            type: mongoose.Types.ObjectId,
-            ref: "Feedback"
-        }
-        ],
         description: {type: String},
+        descriptionNormalized: {type: String}, // Thêm field mới cho description
         quantity: {type: Number, required: true},
+        price: { type: Number, required: true },
         status: {type: Boolean, default: true},
         createDate: {type: Date, default: Date.now},
         updateDate: {type: Date, default: Date.now},
@@ -59,6 +44,37 @@ const ProductSchema: Schema = new Schema<IProduct>( //Define data structure Mong
     }
 );
 
+// Middleware tự động tạo field normalized khi save
+ProductSchema.pre<IProduct>('save', function() {
+  if (this.productName) {
+    this.productNameNormalized = removeVietnameseAccents(this.productName);
+  }
+  if (this.description) {
+    this.descriptionNormalized = removeVietnameseAccents(this.description);
+  }
+});
+
+// Middleware tự động tạo field normalized khi update
+ProductSchema.pre(['updateOne', 'findOneAndUpdate'], function() {
+  const update = this.getUpdate() as any;
+  if (update.$set) {
+    // Trường hợp update với $set
+    if (update.$set.productName) {
+      update.$set.productNameNormalized = removeVietnameseAccents(update.$set.productName);
+    }
+    if (update.$set.description) {
+      update.$set.descriptionNormalized = removeVietnameseAccents(update.$set.description);
+    }
+  } else {
+    // Trường hợp update trực tiếp
+    if (update.productName) {
+      update.productNameNormalized = removeVietnameseAccents(update.productName);
+    }
+    if (update.description) {
+      update.descriptionNormalized = removeVietnameseAccents(update.description);
+    }
+  }
+});
 
 ProductSchema.virtual("id").get(function (this: any) {
   return this._id.toString();
@@ -69,6 +85,9 @@ ProductSchema.set("toJSON", {
   versionKey: false,
   transform: (_doc, ret) => {
     delete ret._id; 
+    // Không hiển thị field normalized trong JSON response
+    delete ret.productNameNormalized;
+    delete ret.descriptionNormalized;
   },
 });
 
