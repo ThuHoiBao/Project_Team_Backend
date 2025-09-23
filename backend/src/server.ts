@@ -8,6 +8,7 @@ import protectedRoutes from './route/protectedRoute.ts';
 import upLoadImage from './route/uploadImageRoute.ts'
 import productRoutes from './route/productRoutes.ts'
 import userRoutes from './route/userRoutes.ts'
+import orderRoutes from './route/orderRoutes.ts'
 import path from 'path';
 import { fileURLToPath } from 'url';
 import {seedProducts} from './seeders/product.seed.ts';
@@ -44,6 +45,8 @@ app.use('/api',upLoadImage, productRoutes, protectedRoutes, userRoutes)
 app.get('/upload', (req, res) => {
   res.render('uploadImage'); 
 });
+
+app.use('/api', orderRoutes);
 
 const PORT = process.env.PORT || 8088;
 app.listen(PORT, () => {
