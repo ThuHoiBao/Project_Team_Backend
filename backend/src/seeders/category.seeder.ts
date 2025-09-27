@@ -4,7 +4,7 @@ import Category from "../models/Category";
 
 async function seedCategories() {
   try {
-    await mongoose.connect("mongodb://127.0.0.1:27017/DB_Futu");
+    await mongoose.connect("mongodb://127.0.0.1:27017/DB_02");
 
     // Xoá categories cũ
     await Category.deleteMany({});

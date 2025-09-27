@@ -7,7 +7,7 @@ import { removeVietnameseAccents } from "../utils/textUtils"; // Import function
 
 async function seedProducts() {
   try {
-    await mongoose.connect("mongodb://127.0.0.1:27017/DB_Futu");
+    await mongoose.connect("mongodb://127.0.0.1:27017/DB_02");
 
     // Xoá product cũ
     await Product.deleteMany({});
