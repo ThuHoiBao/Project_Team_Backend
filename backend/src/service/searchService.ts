@@ -99,10 +99,25 @@ export const getProducts = async ({
     body: queryBody,
   });
 
-  const products = (result.hits.hits as any[]).map((hit) => ({
-    id: hit._id,
-    ...hit._source,
-  }));
+  // const products = (result.hits.hits as any[]).map((hit) => ({
+  //   id: hit._id,
+  //   ...hit._source,
+  // }));
+
+  const productIds = (result.hits.hits as any[]).map((hit) => hit._id);
+
+  // Query lại MongoDB để lấy đầy đủ thông tin (populate hình ảnh)
+  const products = await Product.find({ _id: { $in: productIds } })
+  .populate({
+    path: "listImage",
+    select: "imageProduct -_id", // chỉ lấy field imageProduct, bỏ _id
+  })
+  .lean();
+
+
+  // Giữ nguyên thứ tự như Elasticsearch trả về
+  const productMap = new Map(products.map((p: any) => [p._id.toString(), p]));
+  const orderedProducts = productIds.map((id) => productMap.get(id));
 
   return {
     products,
