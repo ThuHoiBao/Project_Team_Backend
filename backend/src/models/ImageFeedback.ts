@@ -34,7 +34,7 @@ ImageFeedbacktSchema.set("toJSON", {
 });
 
 
-export const ImageProduct: Model<ImageFeedbacktSchema> = mongoose.model<ImageFeedbacktSchema>(
-  "ImageProduct",
+export const ImageFeedback: Model<ImageFeedbacktSchema> = mongoose.model<ImageFeedbacktSchema>(
+  "ImageFeedback",
   ImageFeedbacktSchema
 );
