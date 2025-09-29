@@ -9,6 +9,7 @@ import { Coupon } from '../models/Coupon'; // Thêm import Coupon model
 import ProductSize from '../models/ProductSize';
 import Category from '../models/Category';
 import { OrderStatus } from '../models/Order'; // Giả sử OrderStatus đã được export từ Order model
+import { Coin } from '../models/Coin.ts';
 
 enum PaymentMethod {
   VNPAY = "VNPAY",
@@ -164,6 +165,18 @@ export const seedDatabase = async () => {
     const savedOrder1 = await order1.save();
     const savedOrder2 = await order2.save();
 
+    const coin1=new Coin({
+      User: user1._id,
+      value: 1200,
+    })
+    const coin2=new Coin({
+      User: user2._id,
+      value: 1100,
+    })
+
+    const saveCoin1= await coin1.save();
+    const saveCoin2= await coin2.save();
+
     // Tạo OrderItem và liên kết với Order đã lưu
     const orderItem1 = new OrderItem({
       order: savedOrder1._id,
@@ -239,47 +252,47 @@ export const seedDatabase = async () => {
     await savedOrder2.save();
 // Tạo 3 hình ảnh cho mỗi sản phẩm và lưu vào ImageProduct
     const imageProduct1 = new ImageProduct({
-      imageProduct: 'product1_image_1.jpg',
+      imageProduct: 'https://storage.googleapis.com/bucket_mobileapp/images/Apple_Iphone_16_Pro_Max_128GB_Den.jpg',
       product: product1._id,
     });
 
     const imageProduct2 = new ImageProduct({
-      imageProduct: 'product1_image_2.jpg',
+      imageProduct: 'https://storage.googleapis.com/bucket_mobileapp/images/Apple_Iphone_16_Pro_Max_128GB_Sa_Mac.jpg',
       product: product1._id,
     });
 
     const imageProduct3 = new ImageProduct({
-      imageProduct: 'product1_image_3.jpg',
+      imageProduct: 'https://storage.googleapis.com/bucket_mobileapp/images/SAMSUNG_Galaxy%20S25%2B_512GB_Gray.jpg',
       product: product1._id,
     });
 
     const imageProduct4 = new ImageProduct({
-      imageProduct: 'product2_image_1.jpg',
+      imageProduct: 'https://storage.googleapis.com/bucket_mobileapp/images/SAMSUNG_Galaxy_A16_5G_Gray.jpg',
       product: product2._id,
     });
 
     const imageProduct5 = new ImageProduct({
-      imageProduct: 'product2_image_2.jpg',
+      imageProduct: 'https://storage.googleapis.com/bucket_mobileapp/images/I24_Ultra_5G_Unlocked_Phones_Black.jpg',
       product: product2._id,
     });
 
     const imageProduct6 = new ImageProduct({
-      imageProduct: 'product2_image_3.jpg',
+      imageProduct: 'https://storage.googleapis.com/bucket_mobileapp/images/I24_Ultra_5G_Unlocked_Phones_Gray.jpg',
       product: product2._id,
     });
 
     const imageProduct7 = new ImageProduct({
-      imageProduct: 'product3_image_1.jpg',
+      imageProduct: 'https://storage.googleapis.com/bucket_mobileapp/images/Apple_Iphone_16_Pro_Max_128GB_Sa_Mac.jpg',
       product: product3._id,
     });
 
     const imageProduct8 = new ImageProduct({
-      imageProduct: 'product3_image_2.jpg',
+      imageProduct: 'https://storage.googleapis.com/bucket_mobileapp/images/Apple_Iphone_16_Pro_Max_128GB_Xanh.jpg',
       product: product3._id,
     });
 
     const imageProduct9 = new ImageProduct({
-      imageProduct: 'product3_image_3.jpg',
+      imageProduct: 'https://storage.googleapis.com/bucket_mobileapp/images/Apple_Iphone_14_Pro_Max_128GB_Do.webp',
       product: product3._id,
     });
 

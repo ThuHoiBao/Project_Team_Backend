@@ -9,6 +9,7 @@ import { Payment } from "./Payment.ts";
 import { Coupon } from "./Coupon.ts";
 import Product from "./Product.ts";
 import { ImageProduct } from "./ImageProduct.ts";
+import {Coin} from "./Coin.ts"
 // Object db gom tất cả model
 const db = {
     mongoose,
@@ -19,7 +20,8 @@ const db = {
     Payment,
     Coupon,
     Product,
-    ImageProduct
+    ImageProduct,
+    Coin
 };
 
 

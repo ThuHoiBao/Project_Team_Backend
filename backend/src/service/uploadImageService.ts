@@ -15,7 +15,7 @@ export async function uploadImageToGCS(fileBuffer: Buffer, fileName: string) {
     throw new Error('fileBuffer và fileName phải hợp lệ');
   }
 
-  const file = bucket.file(`images/${fileName}`);
+  const file = bucket.file(`shopHCMUTE/${fileName}`);
   
   try {
     await file.save(fileBuffer, {
@@ -24,8 +24,8 @@ export async function uploadImageToGCS(fileBuffer: Buffer, fileName: string) {
       public: true, // để link truy cập trực tiếp
     });
 
-    console.log(`Upload thành công: images/${fileName}`);
-    return `https://storage.googleapis.com/${bucket.name}/images/${fileName}`;
+    console.log(`Upload thành công: shopHCMUTE/${fileName}`);
+    return `https://storage.googleapis.com/${bucket.name}/shopHCMUTE/${fileName}`;
   } catch (error) {
     console.error('Lỗi upload GCS:', error);
     throw error;
