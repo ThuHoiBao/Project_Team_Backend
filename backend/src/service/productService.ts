@@ -18,17 +18,24 @@ export const productDetailService = async (id: string) => {
       };
     }
     const orderItems = await OrderItem.find({ product: id })
-      .populate({
-        path: "feedback",
-        model: "Feedback"
-      })
+    .populate("feedback").populate("order");
     const feedbacks = orderItems
-      .map((oi) => oi.feedback)
-      .filter((fb) => fb != null);
+      .map((oi) => ({
+        feedback: oi.feedback,
+        order: oi.order,
+      }))
+      .filter((f) => f.feedback != null);
+    // const orderItems = await OrderItem.find({ product: id })
+    //   .populate("feedback");
+      
+
+    // const order = await OrderItem.find({ product: id }).populate("order", "user").select("id");
+
+    // const feedbacks = orderItems.map((oi) => oi.feedback).filter((fb) => fb != null);
     return {
       success: true,
       message: "Product found",
-      data: {product, feedbacks}
+      data: { product, feedbacks }
     };
   } catch (error: any) {
     return {
@@ -42,7 +49,7 @@ export const productDetailService = async (id: string) => {
 export const findProductByCategoryIdService = async (id: string) => {
   try {
 
-    const products = await Product.find({ category: id }).select("productName listImage price").populate("listImage")
+    const products = await Product.find({ category: id }).select("productName listImage price").populate("listImage").limit(4);
 
     if (!products || products.length === 0) {
       return {
