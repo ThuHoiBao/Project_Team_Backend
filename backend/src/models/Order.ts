@@ -61,6 +61,6 @@ OrderSchema.set("toJSON", {
   },
 });
 
-export const Order: Model<IOrder> = mongoose.model<IOrder>("Order", OrderSchema);
+export default mongoose.model<IOrder>("Order", OrderSchema);
 
 
