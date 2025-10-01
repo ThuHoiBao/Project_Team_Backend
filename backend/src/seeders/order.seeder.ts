@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
-import {Order} from "../models/Order";
-import {OrderItem} from "../models/OrderItem";
+import Order  from "../models/Order";
+import { OrderItem } from "../models/OrderItem";
 import User from "../models/User";
 import Product from "../models/Product";
-import {AddressDelivery} from "../models/AddressDelivery";
+import { AddressDelivery } from "../models/AddressDelivery";
 
 async function seedOrders() {
   try {
@@ -25,8 +25,12 @@ async function seedOrders() {
         continue;
       }
 
-      // Lấy 5 sản phẩm bất kỳ
-      const products = await Product.aggregate([{ $sample: { size: 5 } }]);
+      // Lấy toàn bộ sản phẩm
+      const products = await Product.find({});
+      if (products.length === 0) {
+        console.log("⚠️ Không có sản phẩm nào trong DB -> bỏ qua");
+        continue;
+      }
 
       // Tạo Order trước
       const order = await Order.create({
@@ -41,9 +45,9 @@ async function seedOrders() {
         const item = await OrderItem.create({
           order: order._id,
           product: product._id,
-          price: product.price || Math.floor(Math.random() * 500) + 100, // nếu chưa có price thì random
-          size: "M", // hoặc chọn random trong enum Size nếu bạn có
-          quantity: Math.floor(Math.random() * 3) + 1, // 1–3
+          price: product.price || Math.floor(Math.random() * 500) + 100,
+          size: "M",
+          quantity: Math.floor(Math.random() * 3) + 1,
           feedback: null,
         });
         orderItems.push(item._id);
@@ -52,6 +56,11 @@ async function seedOrders() {
       // Cập nhật orderItems vào Order
       await Order.findByIdAndUpdate(order._id, {
         $set: { orderItems },
+      });
+
+      // 👉 Cập nhật orders cho User
+      await User.findByIdAndUpdate(user._id, {
+        $push: { orders: order._id },
       });
 
       console.log(`✅ Seeded order cho user ${user._id}`);

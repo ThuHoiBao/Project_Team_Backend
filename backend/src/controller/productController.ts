@@ -1,4 +1,5 @@
-import { productDetailService, findProductByCategoryIdService, getSizebyProductIdService } from "../service/productService";
+import { getFilteredProducts } from "../service/filterProductService";
+import { productDetailService, findProductByCategoryIdService, getSizebyProductIdService, getNewProducts, getTopSellingProducts } from "../service/productService";
 import { Request, Response } from "express";
 
 export const productDetail = async (req: Request, res: Response) => {
@@ -46,5 +47,60 @@ export const getSizebyProductId = async (req: Request, res: Response) => {
     return res.status(200).json(response);
   } catch (error: any) {
     return res.status(500).json({ message: error.message });
+  }
+}
+
+export const getNewProductsController = async (req: Request, res: Response) => {
+  try{
+    const response = await getNewProducts();
+    if (!response.success) {
+      return res.status(404).json(response);
+    }
+
+    return res.status(200).json(response);
+  } catch (error: any) {
+    return res.status(500).json({ message: error.message });
+  }
+}
+
+export const getTopSellingProductsController = async (req: Request, res: Response) => {
+  try{
+    const response = await getTopSellingProducts();
+    if (!response.success) {
+      return res.status(404).json(response);
+    }
+
+    return res.status(200).json(response);
+  } catch (error: any) {
+    return res.status(500).json({ message: error.message });
+  }
+}
+
+export const filterProductsController = async (req: Request, res: Response) => {
+  try {
+    const {
+      category,
+      priceMin,
+      priceMax,
+      size,
+      rating,
+      page = "1",
+      limit = "10",
+    } = req.query;
+
+    const result = await getFilteredProducts({
+      category: category as string,
+      priceMin: priceMin ? Number(priceMin) : undefined,
+      priceMax: priceMax ? Number(priceMax) : undefined,
+      size: size as string,
+      rating: rating ? Number(rating) : undefined,
+      page: Number(page),
+      limit: Number(limit),
+    });
+
+    return res.status(200).json(result);
+  } catch (error: any) {
+    console.error("Error fetching products:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
   }
 }
