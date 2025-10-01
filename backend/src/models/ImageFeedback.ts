@@ -8,12 +8,12 @@ const ImageFeedbacktSchema: Schema = new Schema<ImageFeedbacktSchema>(
     {
         imageFeedback: {
             type: String, 
-            required: true,
+            required: false,
         },
         feedback: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Feedback",
-            required: true,
+            required: false,
         },
     },
     {
@@ -34,7 +34,7 @@ ImageFeedbacktSchema.set("toJSON", {
 });
 
 
-export const ImageProduct: Model<ImageFeedbacktSchema> = mongoose.model<ImageFeedbacktSchema>(
-  "ImageProduct",
+export const ImageFeedback: Model<ImageFeedbacktSchema> = mongoose.model<ImageFeedbacktSchema>(
+  "ImageFeedback",
   ImageFeedbacktSchema
 );

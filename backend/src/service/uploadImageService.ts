@@ -1,4 +1,6 @@
 // src/controller/uploadPictureController.ts
+// src/controller/uploadPictureService.ts
+
 import { Storage } from '@google-cloud/storage';
 import path from 'path';
 
