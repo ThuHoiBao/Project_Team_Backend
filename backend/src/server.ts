@@ -10,6 +10,8 @@ import productRoutes from './route/productRoutes.ts'
 import userRoutes from './route/userRoutes.ts'
 import orderRoutes from './route/orderRoutes.ts'
 import imageFeedbackRoutes from './route/imageFeedbackRoutes.ts'
+import feedbackRoutes from './route/feedbackRoute.ts'
+import categoryRoutes from './route/categoryRoutes.ts'
 import path from 'path';
 import { fileURLToPath } from 'url';
 import {seedProducts} from './seeders/product.seed.ts';
@@ -40,7 +42,7 @@ app.use(express.json());
 // Routes
 // app.use('/api',productRoutes)
 app.use('/api/auth',authRoutes); 
-app.use('/api',upLoadImage, productRoutes, protectedRoutes, userRoutes, imageFeedbackRoutes)
+app.use('/api',upLoadImage, productRoutes, protectedRoutes, userRoutes, imageFeedbackRoutes, feedbackRoutes, categoryRoutes)
 
 // Route test upload form
 app.get('/upload', (req, res) => {

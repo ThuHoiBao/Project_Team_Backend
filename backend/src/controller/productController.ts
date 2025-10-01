@@ -1,6 +1,8 @@
+
+import { getFilteredProducts } from "../service/filterProductService";
 import { log } from "node:console";
 import { productDetailService, findProductByCategoryIdService, getSizebyProductIdService, addToWWishlistService,
-  deleteFromWishlistService,checkProductExistedWishlistService, getWishlistService
+  deleteFromWishlistService,checkProductExistedWishlistService, getWishlistService, getNewProducts, getTopSellingProducts
  } from "../service/productService";
 import { Request, Response } from "express";
 
@@ -52,6 +54,7 @@ export const getSizebyProductId = async (req: Request, res: Response) => {
   }
 }
 
+
 export const addToWWishlist = async (req, res) => {
   const userId = req.user.id;
   const productId = req.params.id
@@ -68,12 +71,9 @@ export const addToWWishlist = async (req, res) => {
   }
 }
 
-export const deleteFromWishlist = async (req, res) => {
-  const userId = req.user.id;
-  const productId = req.params.id
-  
-  try {
-    const response = await deleteFromWishlistService(userId, productId);
+export const getNewProductsController = async (req: Request, res: Response) => {
+  try{
+    const response = await getNewProducts();
     if (!response.success) {
       return res.status(404).json(response);
     }
@@ -81,6 +81,63 @@ export const deleteFromWishlist = async (req, res) => {
     return res.status(200).json(response);
   } catch (error: any) {
     return res.status(500).json({ message: error.message });
+  }
+}
+
+
+export const deleteFromWishlist = async (req, res) => {
+  const userId = req.user.id;
+  const productId = req.params.id
+  try {
+    const response = await deleteFromWishlistService(userId, productId);
+    if (!response.success) {
+      return res.status(404).json(response);
+    }
+    return res.status(200).json(response);
+  } catch (error: any) {
+    return res.status(500).json({ message: error.message });
+  }
+}
+
+export const getTopSellingProductsController = async (req: Request, res: Response) => {
+  try{
+    const response = await getTopSellingProducts();
+    if (!response.success) {
+      return res.status(404).json(response);
+    }
+
+    return res.status(200).json(response);
+  } catch (error: any) {
+    return res.status(500).json({ message: error.message });
+  }
+}
+
+export const filterProductsController = async (req: Request, res: Response) => {
+  try {
+    const {
+      category,
+      priceMin,
+      priceMax,
+      size,
+      rating,
+      page = "1",
+      limit = "10",
+    } = req.query;
+
+    const result = await getFilteredProducts({
+      category: category as string,
+      priceMin: priceMin ? Number(priceMin) : undefined,
+      priceMax: priceMax ? Number(priceMax) : undefined,
+      size: size as string,
+      rating: rating ? Number(rating) : undefined,
+      page: Number(page),
+      limit: Number(limit),
+    });
+
+    return res.status(200).json(result);
+  } catch (error: any) {
+    console.error("Error fetching products:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
   }
 }
 
@@ -106,4 +163,5 @@ export const getWishlist = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 }
+
 

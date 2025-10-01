@@ -2,11 +2,14 @@ import express from 'express';
 import authenticateToken from '../middleware/authenticateToken.ts'; 
 import { getProductPagination } from '../controller/searchController.ts';
 import { productDetail,findProductByCategoryId, getSizebyProductId,addToWWishlist, deleteFromWishlist, 
-    checkProductExistedWishlist, getWishlist
+    checkProductExistedWishlist, getWishlist, getNewProductsController, getTopSellingProductsController, filterProductsController
  } from '../controller/productController.ts';
 
 const router = express.Router();
 
+router.get('/product/new', getNewProductsController);
+router.get('/product/top-selling', getTopSellingProductsController);
+router.get('/product/filter', filterProductsController);
 router.get('/product/search', getProductPagination );
 router.get('/product/wishlist', authenticateToken, getWishlist)
 router.get('/product/:id', productDetail);
