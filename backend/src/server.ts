@@ -16,6 +16,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import {seedProducts} from './seeders/product.seed.ts';
 import mongoose from 'mongoose';
+import feedbackRoutes from "./route/feedbackRoutes.ts";
 
 import "./models/Category";
 import "./models/Product";
@@ -50,7 +51,7 @@ app.get('/upload', (req, res) => {
 });
 
 app.use('/api', orderRoutes);
-
+app.use("/api/feedback", feedbackRoutes);
 const PORT = process.env.PORT || 8088;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
