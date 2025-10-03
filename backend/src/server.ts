@@ -10,10 +10,13 @@ import productRoutes from './route/productRoutes.ts'
 import userRoutes from './route/userRoutes.ts'
 import orderRoutes from './route/orderRoutes.ts'
 import imageFeedbackRoutes from './route/imageFeedbackRoutes.ts'
+import feedbackRoutes from './route/feedbackRoute.ts'
+import categoryRoutes from './route/categoryRoutes.ts'
 import path from 'path';
 import { fileURLToPath } from 'url';
 import {seedProducts} from './seeders/product.seed.ts';
 import mongoose from 'mongoose';
+import feedbackRoutes from "./route/feedbackRoutes.ts";
 
 import "./models/Category";
 import "./models/Product";
@@ -40,7 +43,7 @@ app.use(express.json());
 // Routes
 // app.use('/api',productRoutes)
 app.use('/api/auth',authRoutes); 
-app.use('/api',upLoadImage, productRoutes, protectedRoutes, userRoutes, imageFeedbackRoutes)
+app.use('/api',upLoadImage, productRoutes, protectedRoutes, userRoutes, imageFeedbackRoutes, feedbackRoutes, categoryRoutes)
 
 // Route test upload form
 app.get('/upload', (req, res) => {
@@ -48,7 +51,7 @@ app.get('/upload', (req, res) => {
 });
 
 app.use('/api', orderRoutes);
-
+app.use("/api/feedback", feedbackRoutes);
 const PORT = process.env.PORT || 8088;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

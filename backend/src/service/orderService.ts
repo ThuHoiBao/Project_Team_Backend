@@ -1,9 +1,38 @@
-
+//services/orderService
 import { OrderResponseDTO } from '../dto/responseDTO/OrderResponseDTO';
 import { OrderItemResponseDTO } from '../dto/responseDTO/OrderItemResponseDTO';
 import db from "../models/index.ts";
-const {Order}:any = db;
-      
+const {Order,Payment,Coin}:any = db;
+import { findOrderById, updateOrderStatus, updateUserCoin } from "../repository/orderRepository";
+import { OrderStatus } from "../models/Order";
+
+export const cancelOrder = async (userId: string, orderId: string) => {
+  const order = await findOrderById(orderId);
+  console.log("id user: "+userId)
+  console.log("id order: "+orderId)
+  if (!order) {
+    throw new Error("Order not found");
+  }
+  console.log(order.user.toString() )
+  if (!userId) {
+    throw new Error("Unauthorized: order does not belong to this user");
+  }
+  console.log(order.payment.paymentMethod )
+  // Nếu đơn hàng không phải COD thì hoàn coin
+  if (order.payment.paymentMethod !== "COD") {
+    const amount = Number(order.payment.amount) || 0;
+    console.log(amount)
+    if (amount > 0) {
+      await updateUserCoin(userId, amount); // Cộng coin cho user
+    }
+  }
+
+  // Cập nhật trạng thái CANCELLED
+  const updatedOrder = await updateOrderStatus(orderId, OrderStatus.CANCELLED);
+
+  return updatedOrder;
+};
+    
 // Lấy tất cả đơn hàng của người dùng theo userId
 export const getOrdersByUserId = async (userId: string): Promise<OrderResponseDTO[]> => {
   try {
