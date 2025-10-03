@@ -3,7 +3,6 @@ import { Request, Response } from "express";
 import multer from "multer";
 import { FeedbackService } from "../service/feedbackService.ts";
 import { getTopFeedbackNewest } from "../service/feedbackService";
-import { Request, Response } from "express";
 const storage = multer.memoryStorage();
 export const upload = multer({ storage });
 
@@ -50,7 +49,8 @@ export const getFeedbacksByOrder = async (req: Request, res: Response) => {
   } catch (err: any) {
     console.error("Lỗi getFeedbacksByOrder:", err);
     return res.status(500).json({ message: err.message || "Server error" });
-
+  }
+}
 
 export const getTopFeedbackNewestController = async (req: Request, res: Response) => {
   try {
