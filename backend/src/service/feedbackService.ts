@@ -86,7 +86,6 @@ export class FeedbackService {
 
 }
 
-
 export const getTopFeedbackNewest = async () => {
   try {
     const feedbacks = await Feedback.aggregate([

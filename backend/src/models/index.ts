@@ -2,7 +2,7 @@
 import mongoose from "mongoose";
 
 import User from "./User.ts";
-import {Order} from "./Order.ts";
+import Order from "./Order.ts";
 import { OrderItem } from "./OrderItem.ts";
 import { AddressDelivery } from "./AddressDelivery.ts";
 import { Payment } from "./Payment.ts";
