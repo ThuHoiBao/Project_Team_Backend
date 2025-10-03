@@ -11,12 +11,13 @@ import userRoutes from './route/userRoutes.ts'
 import orderRoutes from './route/orderRoutes.ts'
 import imageFeedbackRoutes from './route/imageFeedbackRoutes.ts'
 import feedbackRoutes from './route/feedbackRoute.ts'
+import feedbackRoute from './route/feedbackRoutes.ts'
 import categoryRoutes from './route/categoryRoutes.ts'
 import path from 'path';
 import { fileURLToPath } from 'url';
 import {seedProducts} from './seeders/product.seed.ts';
 import mongoose from 'mongoose';
-import feedbackRoutes from "./route/feedbackRoutes.ts";
+
 
 import "./models/Category";
 import "./models/Product";
@@ -51,7 +52,7 @@ app.get('/upload', (req, res) => {
 });
 
 app.use('/api', orderRoutes);
-app.use("/api/feedback", feedbackRoutes);
+app.use("/api/feedback", feedbackRoute);
 const PORT = process.env.PORT || 8088;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
