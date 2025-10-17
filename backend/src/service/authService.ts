@@ -16,28 +16,73 @@ import sendEmail from "../utils/mailUtils.ts"; // Import mail utils
 const otpStorage: Record<string, string> = {};
 
 /** Đăng ký: kiểm tra, sinh OTP, gửi mail */
+// export const registerUserService = async (dtoData: RegisterUserRequestDTO) => {
+//   const { email, password, firstName, lastName } = dtoData;
+//   console.log(dtoData);
+//   console.log(email);
+//   console.log(password);
+//   console.log(firstName);
+//   console.log(lastName);
+//   if (!email || !password || !firstName || !lastName) {
+//     throw new Error("All fields are required");
+//   }
+//   if (await isEmailExist(email)) {
+//     throw new Error("Email is already registered");
+//   }
+//   const otp = OTP.generate(6, {
+//     digits: true,
+//     upperCase: false,
+//     specialChars: false,
+//   });
+//   otpStorage[email] = otp;
+//   await sendEmail(email, "Your OTP code", otp); // Chỉnh sửa thêm subject và otp
+//   return { message: "OTP sent to your email" };
+// };
 export const registerUserService = async (dtoData: RegisterUserRequestDTO) => {
   const { email, password, firstName, lastName } = dtoData;
-  console.log(dtoData);
-  console.log(email);
-  console.log(password);
-  console.log(firstName);
-  console.log(lastName);
-  if (!email || !password || !firstName || !lastName) {
-    throw new Error("All fields are required");
+
+  //Loại bỏ khoảng trắng dư thừa
+  const trimmedEmail = email.trim();
+  const trimmedPassword = password.trim();
+  const trimmedFirstName = firstName.trim();
+  const trimmedLastName = lastName.trim();
+
+  // Kiểm tra các trường không được để trống
+  if (!trimmedEmail) throw new Error("Email không được để trống");
+  if (!trimmedPassword) throw new Error("Mật khẩu không được để trống");
+  if (!trimmedFirstName) throw new Error("Họ không được để trống");
+  if (!trimmedLastName) throw new Error("Tên không được để trống");
+
+  // Kiểm tra định dạng email
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(trimmedEmail)) {
+    throw new Error("Email không đúng định dạng");
   }
-  if (await isEmailExist(email)) {
-    throw new Error("Email is already registered");
+
+  // Kiểm tra độ dài mật khẩu (tối thiểu 8 ký tự)
+  if (trimmedPassword.length < 8) {
+    throw new Error("Mật khẩu phải có ít nhất 8 ký tự");
   }
+
+  // Kiểm tra email đã tồn tại
+  if (await isEmailExist(trimmedEmail)) {
+    throw new Error("Email đã được đăng ký");
+  }
+
+  // Sinh mã OTP
   const otp = OTP.generate(6, {
     digits: true,
     upperCase: false,
     specialChars: false,
   });
-  otpStorage[email] = otp;
-  await sendEmail(email, "Your OTP code", otp); // Chỉnh sửa thêm subject và otp
-  return { message: "OTP sent to your email" };
+
+  // Lưu OTP và gửi mail
+  otpStorage[trimmedEmail] = otp;
+  await sendEmail(trimmedEmail, "Mã OTP xác nhận đăng ký", otp);
+
+  return { message: "Mã OTP đã được gửi đến email của bạn" };
 };
+
 
 /** Xác minh OTP: map DTO -> payload, hash password, lưu User */
 export const verifyOtpService = async (dtoData: RegisterUserRequestDTO) => {
@@ -68,18 +113,58 @@ export const verifyOtpService = async (dtoData: RegisterUserRequestDTO) => {
 };
 
 /** Đăng nhập */
+// export const loginUserService = async (payload: {
+//   email: string;
+//   password: string;
+// }) => {
+//   const user = await findUserByEmail(payload.email);
+//   if (!user) throw new Error("User not found");
+
+//   const ok = await bcrypt.compare(payload.password, user.password);
+//   if (!ok) throw new Error("Invalid credentials");
+
+//   const jti = crypto.randomUUID();
+
+//   const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET as string, {
+//     expiresIn: "1h",
+//     jwtid: jti,
+//   });
+
+//   return { token };
+// };
 export const loginUserService = async (payload: {
   email: string;
   password: string;
 }) => {
-  const user = await findUserByEmail(payload.email);
-  if (!user) throw new Error("User not found");
+  const email = payload.email.trim();
+  const password = payload.password.trim();
 
-  const ok = await bcrypt.compare(payload.password, user.password);
-  if (!ok) throw new Error("Invalid credentials");
+  // Kiểm tra email rỗng
+  if (!email) {
+    throw new Error("Email không được để trống");
+  }
 
+  // Kiểm tra định dạng email
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    throw new Error("Email không đúng định dạng");
+  }
+
+  // Kiểm tra password rỗng
+  if (!password) {
+    throw new Error("Mật khẩu không được để trống");
+  }
+
+  // Tìm user theo email
+  const user = await findUserByEmail(email);
+  if (!user) throw new Error("Không tìm thấy người dùng");
+
+  // Kiểm tra mật khẩu
+  const ok = await bcrypt.compare(password, user.password);
+  if (!ok) throw new Error("Sai mật khẩu hoặc thông tin đăng nhập");
+
+  // Tạo JWT token
   const jti = crypto.randomUUID();
-
   const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET as string, {
     expiresIn: "1h",
     jwtid: jti,
@@ -87,6 +172,8 @@ export const loginUserService = async (payload: {
 
   return { token };
 };
+
+
 
 // Quên mật khẩu và gửi OTP
 export const forgotPasswordService = async (data) => {
