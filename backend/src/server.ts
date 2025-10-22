@@ -13,16 +13,19 @@ import imageFeedbackRoutes from './route/imageFeedbackRoutes.ts'
 import feedbackRoutes from './route/feedbackRoute.ts'
 import feedbackRoute from './route/feedbackRoutes.ts'
 import categoryRoutes from './route/categoryRoutes.ts'
+import notificationRoutes from "./route/notificationRoutes";
 import path from 'path';
 import { fileURLToPath } from 'url';
 import {seedProducts} from './seeders/product.seed.ts';
 import mongoose from 'mongoose';
-
-
+import http from "http";
 import "./models/Category";
 import "./models/Product";
 import "./models/ImageProduct.ts";
 import "./models/Feedback.ts";
+import { Server } from 'http';
+import { initSocket } from "./socket";
+
 
 // Tạo __dirname (vì dùng ES module)
 const __filename = fileURLToPath(import.meta.url);
@@ -36,7 +39,6 @@ const app = express();
 // Cấu hình EJS
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views', 'users'));
-
 // Middleware
 app.use(cors());
 app.use(express.json());
@@ -53,8 +55,18 @@ app.get('/upload', (req, res) => {
 
 app.use('/api', orderRoutes);
 app.use("/api/feedback", feedbackRoute);
+app.use("/api/notifications", notificationRoutes);
+
+
+const server = http.createServer(app);
+initSocket(server);
+
+
+
+
+
 const PORT = process.env.PORT || 8088;
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
 
