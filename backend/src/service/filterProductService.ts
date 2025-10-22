@@ -4,23 +4,37 @@ import {OrderItem} from "../models/OrderItem";
 import mongoose from "mongoose";
 
 interface FilterOptions {
-  category?: string;
+  categories?: string[];
   priceMin?: number;
   priceMax?: number;
-  size?: string;
+  sizes?: string[]; 
   rating?: number;
   page?: number;
   limit?: number;
+  sort?: string;
+}
+
+// Sửa interface để flexible hơn với _id
+interface ProductWithRating {
+  _id: any;
+  productName: string;
+  price: number;
+  createDate?: Date;
+  listImage?: any[];
+  category?: any;
+  productSizes?: any[];
+  averageRating: number;
+  [key: string]: any;
 }
 
 export const getFilteredProducts = async (options: FilterOptions) => {
-  const { category, priceMin, priceMax, size, rating, page = 1, limit = 10 } = options;
+  const { categories, priceMin, priceMax, sizes, rating, page = 1, limit = 10, sort } = options;
 
   const filter: any = {};
 
   // lọc category
-  if (category) {
-    filter.category = new mongoose.Types.ObjectId(category);
+  if (categories && categories.length > 0) {
+    filter.category = { $in: categories.map((id) => new mongoose.Types.ObjectId(id)) };
   }
 
   // lọc theo khoảng giá
@@ -30,77 +44,104 @@ export const getFilteredProducts = async (options: FilterOptions) => {
     if (priceMax !== undefined) filter.price.$lte = priceMax;
   }
 
-  // lọc theo size (tìm product có size = "L")
-  if (size) {
-    const productSizes = await ProductSize.find({ size }).select("product");
+  // lọc theo sizes - sản phẩm có ít nhất 1 size trong danh sách sizes
+  if (sizes && sizes.length > 0) {
+    const productSizes = await ProductSize.find({ size: { $in: sizes } }).select("product");
     const productIds = productSizes.map((ps) => ps.product);
 
-    filter._id = { $in: productIds };
+    // Nếu đã có filter._id từ trước (ví dụ từ filter khác), cần merge
+    if (filter._id) {
+      filter._id = { $in: productIds };
+    } else {
+      filter._id = { $in: productIds };
+    }
   }
 
   // lấy danh sách product ban đầu
   let products = await Product.find(filter)
-    .select("productName price") // áp dụng cho Product
+    .select("productName price createDate") 
     .populate({
-        path: "listImage",
-        select: "imageProduct -_id" // chỉ lấy imageProduct, bỏ _id
+      path: "listImage",
+      select: "imageProduct -_id",
     })
     .populate({
-        path: "category",
-        select: "categoryName -_id" // chỉ lấy categoryName
+      path: "category",
+      select: "categoryName -_id",
     })
     .populate({
-        path: "productSizes",
-        select: "size quantity -_id" // chỉ lấy size và quantity
+      path: "productSizes",
+      select: "size quantity -_id",
     })
     .lean();
 
-    const productIds = products.map((p) => p._id);
+  const productIds = products.map((p) => p._id);
 
-    const ratings = await OrderItem.aggregate([
-      { $match: { product: { $in: productIds } } },
-      {
-        $lookup: {
-          from: "feedbacks", // tên collection Feedback
-          localField: "feedback",
-          foreignField: "_id",
-          as: "feedback",
-        },
+  // lấy rating
+  const ratings = await OrderItem.aggregate([
+    { $match: { product: { $in: productIds } } },
+    {
+      $lookup: {
+        from: "feedbacks",
+        localField: "feedback",
+        foreignField: "_id",
+        as: "feedback",
       },
-      { $unwind: "$feedback" },
-      {
-        $group: {
-          _id: "$product",
-          avgRating: { $avg: "$feedback.rating" },
-        },
+    },
+    { $unwind: "$feedback" },
+    {
+      $group: {
+        _id: "$product",
+        avgRating: { $avg: "$feedback.rating" },
       },
-    ]);
+    },
+  ]);
 
-    const ratingMap: Record<string, number> = {};
-    ratings.forEach((r) => {
-      ratingMap[r._id.toString()] = r.avgRating;
-    });
+  const ratingMap: Record<string, number> = {};
+  ratings.forEach((r) => {
+    ratingMap[r._id.toString()] = r.avgRating;
+  });
 
+  // gắn thêm averageRating với type assertion
+  let productsWithRating = products.map((p) => ({
+    ...p,
+    averageRating: ratingMap[p._id.toString()] || 0,
+  })) as ProductWithRating[];
 
-    // gắn thêm field averageRating
-    products = products.map((p) => ({
-      ...p,
-      averageRating: ratingMap[p._id.toString()] || 0,
-    }));
+  // lọc theo rating nếu có
+  if (rating !== undefined) {
+    productsWithRating = productsWithRating.filter((p) => p.averageRating >= rating);
+  }
 
-    // nếu có lọc rating thì filter sau
-    if (rating !== undefined) {
-    products = products.filter((p) => p.averageRating >= rating);
+  if (sort) {
+    switch (sort) {
+      case "priceLowHigh":
+        productsWithRating.sort((a, b) => a.price - b.price);
+        break;
+      case "priceHighLow":
+        productsWithRating.sort((a, b) => b.price - a.price);
+        break;
+      case "ratingHighLow":
+        productsWithRating.sort((a, b) => b.averageRating - a.averageRating);
+        break;
+      case "newest":
+        productsWithRating.sort((a, b) => {
+          const dateA = a.createDate ? new Date(a.createDate).getTime() : 0;
+          const dateB = b.createDate ? new Date(b.createDate).getTime() : 0;
+          return dateB - dateA;
+        });
+        break;
+      default:
+        break;
     }
-    
+  }
 
   // phân trang
   const startIndex = (page - 1) * limit;
   const endIndex = page * limit;
-  const paginatedProducts = products.slice(startIndex, endIndex);
+  const paginatedProducts = productsWithRating.slice(startIndex, endIndex);
 
   return {
-    total: products.length,
+    total: productsWithRating.length,
     page,
     limit,
     products: paginatedProducts,

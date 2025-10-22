@@ -10,7 +10,7 @@ import mongoose, { Schema, Document, Types } from "mongoose";
 
 export const productDetailService = async (id: string) => {
   try {
-    const product = await Product.findById(id)
+    const product = await  (Product as any).findById(id)
       .populate("category", "categoryName")
       .populate("listImage", "imageProduct");
 
@@ -80,7 +80,7 @@ export const findProductByCategoryIdService = async (categoryId: string, product
 };
 
 
-export const getSizebyProductIdService = async (id) => {
+export const getSizebyProductIdService = async (id: string) => {
   try {
     const sizes = await ProductSize.find({ product: id })
     if (!sizes || sizes.length === 0) {
@@ -134,7 +134,7 @@ export const getNewProducts = async () => {
 
         // Lấy danh sách rating từ feedback
         const ratings = orderItemList
-          .map((item) => item.feedback?.rating)
+          .map((item: any) => item.feedback?.rating)
           .filter((r) => typeof r === "number");
 
         const totalRating = ratings.reduce((total, r) => total + r, 0);
@@ -205,7 +205,7 @@ export const getTopSellingProducts = async () => {
         }
 
         const ratings = orderItemList
-          .map((item) => item.feedback?.rating)
+          .map((item:any) => item.feedback?.rating)
           .filter((r) => typeof r === "number");
 
         const totalRating = ratings.reduce((total, r) => total + r, 0);

@@ -115,23 +115,42 @@ export const getTopSellingProductsController = async (req: Request, res: Respons
 export const filterProductsController = async (req: Request, res: Response) => {
   try {
     const {
-      category,
+      categories,
       priceMin,
       priceMax,
-      size,
+      sizes,
       rating,
       page = "1",
       limit = "10",
+      sort,
     } = req.query;
 
+    // ép categories thành mảng string
+    let categoryArray: string[] | undefined;
+
+    if (Array.isArray(categories)) {
+      // categories có thể chứa ParsedQs => ép từng phần tử thành string
+      categoryArray = categories.map((c) => String(c));
+    } else if (typeof categories === "string") {
+      categoryArray = categories.split(","); // ?categories=1,2,3
+    }
+
+    let sizesArray: string[] | undefined;
+    if (Array.isArray(sizes)) {
+      sizesArray = sizes.map((s) => String(s));
+    } else if (typeof sizes === "string") {
+      sizesArray = sizes.split(",").filter(s => s.trim()); // ?sizes=S,M,L
+    }
+
     const result = await getFilteredProducts({
-      category: category as string,
+      categories: categoryArray,
       priceMin: priceMin ? Number(priceMin) : undefined,
       priceMax: priceMax ? Number(priceMax) : undefined,
-      size: size as string,
+      sizes: sizesArray,
       rating: rating ? Number(rating) : undefined,
       page: Number(page),
       limit: Number(limit),
+      sort: sort as string | undefined,
     });
 
     return res.status(200).json(result);
@@ -139,7 +158,8 @@ export const filterProductsController = async (req: Request, res: Response) => {
     console.error("Error fetching products:", error);
     return res.status(500).json({ message: "Internal Server Error" });
   }
-}
+};
+
 
 export const checkProductExistedWishlist = async (req, res) => {
   const userId = req.user.id;

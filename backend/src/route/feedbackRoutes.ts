@@ -1,6 +1,6 @@
 // feedbackRoute
 import express from 'express';
-import { bulkFeedback, upload ,getFeedbacksByOrder} from "../controller/feedbackController.ts";
+import { bulkFeedback, upload ,getFeedbacksByOrder, getTopFeedbackNewestController} from "../controller/feedbackController.ts";
 
 const router = express.Router();
 
@@ -8,5 +8,6 @@ const router = express.Router();
 // `upload.any()` để nhận tất cả files
 router.post("/bulk", upload.any(), bulkFeedback);
 router.get("/order/:orderId", getFeedbacksByOrder);
+router.get("/feedback/best", getTopFeedbackNewestController);
 
 export default router;

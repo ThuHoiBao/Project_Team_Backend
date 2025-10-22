@@ -6,7 +6,8 @@ export interface ICategory extends Document {
   listProduct: Types.ObjectId[];
   createdAt?: Date;
   updatedAt?: Date;
-  id?: string; 
+  id?: string;
+  isActive: boolean;
 }
 
 const CategorySchema = new mongoose.Schema<ICategory>(
@@ -17,7 +18,9 @@ const CategorySchema = new mongoose.Schema<ICategory>(
         type: mongoose.Schema.Types.ObjectId,
         ref: "Product",
       },
+
     ],
+    isActive: { type: Boolean, default: true },
   },
   { timestamps: true }
 );
