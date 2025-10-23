@@ -13,6 +13,7 @@ const ImageFeedbacktSchema: Schema = new Schema<ImageFeedbacktSchema>(
         feedback: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Feedback",
+
             required: false,
         },
     },
