@@ -9,10 +9,8 @@ function getRandomSizes(n: number): Size[] {
   return shuffled.slice(0, n);
 }
 
-async function seedProductSizes() {
+export const seedProductSizes = async () => {
   try {
-    await mongoose.connect("mongodb://127.0.0.1:27017/DB_02");
-
     // Xóa dữ liệu cũ
     await ProductSize.deleteMany({});
     console.log("Đã xoá dữ liệu product size cũ ✅");

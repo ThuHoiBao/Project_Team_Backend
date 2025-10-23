@@ -15,9 +15,9 @@ export interface IOrder extends Document {
     user: mongoose.Types.ObjectId;
     orderStatus: OrderStatus;
     orderDate: Date;
-    payment: mongoose.Types.ObjectId;
     addressDelivery: mongoose.Types.ObjectId;
     coupon: mongoose.Types.ObjectId;
+    cancellationReason?: string;
 }
 
 const OrderSchema: Schema = new Schema<IOrder>(
@@ -39,9 +39,12 @@ const OrderSchema: Schema = new Schema<IOrder>(
       default: OrderStatus.ORDERED,
     },
     orderDate: { type: Date, default: Date.now },
-    payment: { type: Schema.Types.ObjectId, ref: "Payment",  },
     addressDelivery:  { type: Schema.Types.ObjectId, ref: "AddressDelivery", required: true },
     coupon:  { type: Schema.Types.ObjectId, ref: "Coupon" },
+    cancellationReason: {
+      type: String,
+      required: false,
+    },
   },
   {
      timestamps: true

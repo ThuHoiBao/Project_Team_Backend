@@ -1,6 +1,7 @@
 // src/models/User.ts
 import mongoose from "mongoose";
 
+
 export enum EnumRole {
   Admin = 'Admin',
   Customer = 'Customer'
@@ -20,6 +21,7 @@ const UserSchema = new mongoose.Schema(
       default: EnumRole.Customer
     },
     image:     { type: String },
+    status: { type: Boolean, default: true }, 
     AddressDelivery: [
       {
         type: mongoose.Types.ObjectId,

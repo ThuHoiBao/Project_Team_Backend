@@ -1,7 +1,7 @@
 
 import  User  from '../models/User.ts';
 import  Product  from '../models/Product';
-import { Order } from '../models/Order';
+import  Order  from '../models/Order';
 import { AddressDelivery } from '../models/AddressDelivery';
 import { Payment } from '../models/Payment';
 import { ImageProduct } from '../models/ImageProduct';
@@ -56,8 +56,489 @@ export const seedDatabase = async () => {
       image: 'user_image_2.jpg',
     });
 
+    const user3 = new User({
+      firstName: 'Tran',
+      lastName: 'Van',
+      email: 'tran.van@example.com',
+      password: 'hashedpassword789',
+      phoneNumber: '0911223344',
+      gender: true,
+      role: 'Customer',
+      image: 'user_image_3.jpg',
+    });
+
+    const user4 = new User({
+      firstName: 'Le',
+      lastName: 'Thi',
+      email: 'le.thi@example.com',
+      password: 'hashedpassword101',
+      phoneNumber: '0922334455',
+      gender: false,
+      role: 'Customer',
+      image: 'user_image_4.jpg',
+    });
+
+    const user5 = new User({
+      firstName: 'Hoang',
+      lastName: 'Phuc',
+      email: 'hoang.phuc@example.com',
+      password: 'hashedpassword112',
+      phoneNumber: '0933445566',
+      gender: true,
+      role: 'Customer',
+      image: 'user_image_5.jpg',
+    });
+
+    const user6 = new User({
+      firstName: 'Huynh',
+      lastName: 'Linh',
+      email: 'huynh.linh@example.com',
+      password: 'hashedpassword131',
+      phoneNumber: '0944556677',
+      gender: false,
+      role: 'Customer',
+      image: 'user_image_6.jpg',
+    });
+
+    const user7 = new User({
+      firstName: 'Phan',
+      lastName: 'Anh',
+      email: 'phan.anh@example.com',
+      password: 'hashedpassword415',
+      phoneNumber: '0955667788',
+      gender: true,
+      role: 'Customer',
+      image: 'user_image_7.jpg',
+    });
+
+    const user8 = new User({
+      firstName: 'Vo',
+      lastName: 'Ngoc',
+      email: 'vo.ngoc@example.com',
+      password: 'hashedpassword161',
+      phoneNumber: '0966778899',
+      gender: false,
+      role: 'Customer',
+      image: 'user_image_8.jpg',
+    });
+
+    const user9 = new User({
+      firstName: 'Dang',
+      lastName: 'Minh',
+      email: 'dang.minh@example.com',
+      password: 'hashedpassword718',
+      phoneNumber: '0977889900',
+      gender: true,
+      role: 'Customer',
+      image: 'user_image_9.jpg',
+    });
+
+    const user10 = new User({
+      firstName: 'Bui',
+      lastName: 'Ha',
+      email: 'bui.ha@example.com',
+      password: 'hashedpassword191',
+      phoneNumber: '0988990011',
+      gender: false,
+      role: 'Customer',
+      image: 'user_image_10.jpg',
+    });
+
+    const user11 = new User({
+      firstName: 'Do',
+      lastName: 'Tuan',
+      email: 'do.tuan@example.com',
+      password: 'hashedpassword202',
+      phoneNumber: '0912341234',
+      gender: true,
+      role: 'Customer',
+      image: 'user_image_11.jpg',
+    });
+
+    const user12 = new User({
+      firstName: 'Ngo',
+      lastName: 'Phuong',
+      email: 'ngo.phuong@example.com',
+      password: 'hashedpassword212',
+      phoneNumber: '0923452345',
+      gender: false,
+      role: 'Customer',
+      image: 'user_image_12.jpg',
+    });
+
+    const user13 = new User({
+      firstName: 'Duong',
+      lastName: 'Huy',
+      email: 'duong.huy@example.com',
+      password: 'hashedpassword223',
+      phoneNumber: '0934563456',
+      gender: true,
+      role: 'Customer',
+      image: 'user_image_13.jpg',
+    });
+
+    const user14 = new User({
+      firstName: 'Ly',
+      lastName: 'Thao',
+      email: 'ly.thao@example.com',
+      password: 'hashedpassword242',
+      phoneNumber: '0945674567',
+      gender: false,
+      role: 'Customer',
+      image: 'user_image_14.jpg',
+    });
+
+    const user15 = new User({
+      firstName: 'Vu',
+      lastName: 'Quan',
+      email: 'vu.quan@example.com',
+      password: 'hashedpassword252',
+      phoneNumber: '0956785678',
+      gender: true,
+      role: 'Customer',
+      image: 'user_image_15.jpg',
+    });
+
+    const user16 = new User({
+      firstName: 'Ho',
+      lastName: 'Yen',
+      email: 'ho.yen@example.com',
+      password: 'hashedpassword262',
+      phoneNumber: '0967896789',
+      gender: false,
+      role: 'Customer',
+      image: 'user_image_16.jpg',
+    });
+
+    const user17 = new User({
+      firstName: 'Dinh',
+      lastName: 'Bao',
+      email: 'dinh.bao@example.com',
+      password: 'hashedpassword272',
+      phoneNumber: '0978907890',
+      gender: true,
+      role: 'Customer',
+      image: 'user_image_17.jpg',
+    });
+
+    const user18 = new User({
+      firstName: 'Mai',
+      lastName: 'Trang',
+      email: 'mai.trang@example.com',
+      password: 'hashedpassword282',
+      phoneNumber: '0989018901',
+      gender: false,
+      role: 'Customer',
+      image: 'user_image_18.jpg',
+    });
+
+    const user19 = new User({
+      firstName: 'Trinh',
+      lastName: 'Son',
+      email: 'trinh.son@example.com',
+      password: 'hashedpassword292',
+      phoneNumber: '0913211321',
+      gender: true,
+      role: 'Customer',
+      image: 'user_image_19.jpg',
+    });
+
+    const user20 = new User({
+      firstName: 'Cao',
+      lastName: 'Quynh',
+      email: 'cao.quynh@example.com',
+      password: 'hashedpassword303',
+      phoneNumber: '0924322432',
+      gender: false,
+      role: 'Customer',
+      image: 'user_image_20.jpg',
+    });
+
+    const user21 = new User({
+      firstName: 'Luong',
+      lastName: 'Khai',
+      email: 'luong.khai@example.com',
+      password: 'hashedpassword313',
+      phoneNumber: '0935433543',
+      gender: true,
+      role: 'Customer',
+      image: 'user_image_21.jpg',
+    });
+
+    const user22 = new User({
+      firstName: 'Vuong',
+      lastName: 'Nhi',
+      email: 'vuong.nhi@example.com',
+      password: 'hashedpassword323',
+      phoneNumber: '0946544654',
+      gender: false,
+      role: 'Customer',
+      image: 'user_image_22.jpg',
+    });
+
+    const user23 = new User({
+      firstName: 'Nguyen',
+      lastName: 'An',
+      email: 'nguyen.an@example.com',
+      password: 'hashedpassword334',
+      phoneNumber: '0915678901',
+      gender: true,
+      role: 'Customer',
+      image: 'user_image_23.jpg',
+    });
+
+    const user24 = new User({
+      firstName: 'Tran',
+      lastName: 'Bich',
+      email: 'tran.bich@example.com',
+      password: 'hashedpassword345',
+      phoneNumber: '0984567892',
+      gender: false,
+      role: 'Customer',
+      image: 'user_image_24.jpg',
+    });
+
+    const user25 = new User({
+      firstName: 'Le',
+      lastName: 'Cuong',
+      email: 'le.cuong@example.com',
+      password: 'hashedpassword356',
+      phoneNumber: '0973456783',
+      gender: true,
+      role: 'Customer',
+      image: 'user_image_25.jpg',
+    });
+
+    const user26 = new User({
+      firstName: 'Pham',
+      lastName: 'Dung',
+      email: 'pham.dung@example.com',
+      password: 'hashedpassword367',
+      phoneNumber: '0962345674',
+      gender: false,
+      role: 'Customer',
+      image: 'user_image_26.jpg',
+    });
+
+    const user27 = new User({
+      firstName: 'Hoang',
+      lastName: 'Giang',
+      email: 'hoang.giang@example.com',
+      password: 'hashedpassword378',
+      phoneNumber: '0951234565',
+      gender: true,
+      role: 'Customer',
+      image: 'user_image_27.jpg',
+    });
+
+    const user28 = new User({
+      firstName: 'Huynh',
+      lastName: 'Huong',
+      email: 'huynh.huong@example.com',
+      password: 'hashedpassword389',
+      phoneNumber: '0949876546',
+      gender: false,
+      role: 'Customer',
+      image: 'user_image_28.jpg',
+    });
+
+    const user29 = new User({
+      firstName: 'Phan',
+      lastName: 'Khanh',
+      email: 'phan.khanh@example.com',
+      password: 'hashedpassword390',
+      phoneNumber: '0938765437',
+      gender: true,
+      role: 'Customer',
+      image: 'user_image_29.jpg',
+    });
+
+    const user30 = new User({
+      firstName: 'Vo',
+      lastName: 'Lien',
+      email: 'vo.lien@example.com',
+      password: 'hashedpassword401',
+      phoneNumber: '0927654328',
+      gender: false,
+      role: 'Customer',
+      image: 'user_image_30.jpg',
+    });
+
+    const user31 = new User({
+      firstName: 'Dang',
+      lastName: 'Long',
+      email: 'dang.long@example.com',
+      password: 'hashedpassword412',
+      phoneNumber: '0916543219',
+      gender: true,
+      role: 'Customer',
+      image: 'user_image_31.jpg',
+    });
+
+    const user32 = new User({
+      firstName: 'Bui',
+      lastName: 'My',
+      email: 'bui.my@example.com',
+      password: 'hashedpassword423',
+      phoneNumber: '0905432101',
+      gender: false,
+      role: 'Customer',
+      image: 'user_image_32.jpg',
+    });
+
+    const user33 = new User({
+      firstName: 'Do',
+      lastName: 'Nam',
+      email: 'do.nam@example.com',
+      password: 'hashedpassword434',
+      phoneNumber: '0914321092',
+      gender: true,
+      role: 'Customer',
+      image: 'user_image_33.jpg',
+    });
+
+    const user34 = new User({
+      firstName: 'Ngo',
+      lastName: 'Oanh',
+      email: 'ngo.oanh@example.com',
+      password: 'hashedpassword445',
+      phoneNumber: '0983210983',
+      gender: false,
+      role: 'Customer',
+      image: 'user_image_34.jpg',
+    });
+
+    const user35 = new User({
+      firstName: 'Duong',
+      lastName: 'Phong',
+      email: 'duong.phong@example.com',
+      password: 'hashedpassword456',
+      phoneNumber: '0972109874',
+      gender: true,
+      role: 'Customer',
+      image: 'user_image_35.jpg',
+    });
+
+    const user36 = new User({
+      firstName: 'Ly',
+      lastName: 'Quyen',
+      email: 'ly.quyen@example.com',
+      password: 'hashedpassword467',
+      phoneNumber: '0961098765',
+      gender: false,
+      role: 'Customer',
+      image: 'user_image_36.jpg',
+    });
+
+    const user37 = new User({
+      firstName: 'Vu',
+      lastName: 'Sang',
+      email: 'vu.sang@example.com',
+      password: 'hashedpassword478',
+      phoneNumber: '0950987654',
+      gender: true,
+      role: 'Customer',
+      image: 'user_image_37.jpg',
+    });
+
+    const user38 = new User({
+      firstName: 'Ho',
+      lastName: 'Thuy',
+      email: 'ho.thuy@example.com',
+      password: 'hashedpassword489',
+      phoneNumber: '0949876543',
+      gender: false,
+      role: 'Customer',
+      image: 'user_image_38.jpg',
+    });
+
+    const user39 = new User({
+      firstName: 'Dinh',
+      lastName: 'Tung',
+      email: 'dinh.tung@example.com',
+      password: 'hashedpassword490',
+      phoneNumber: '0938765432',
+      gender: true,
+      role: 'Customer',
+      image: 'user_image_39.jpg',
+    });
+
+    const user40 = new User({
+      firstName: 'Mai',
+      lastName: 'Uyen',
+      email: 'mai.uyen@example.com',
+      password: 'hashedpassword501',
+      phoneNumber: '0927654321',
+      gender: false,
+      role: 'Customer',
+      image: 'user_image_40.jpg',
+    });
+
+    const user41 = new User({
+      firstName: 'Trinh',
+      lastName: 'Viet',
+      email: 'trinh.viet@example.com',
+      password: 'hashedpassword512',
+      phoneNumber: '0916543210',
+      gender: true,
+      role: 'Customer',
+      image: 'user_image_41.jpg',
+    });
+
+    const user42 = new User({
+      firstName: 'Cao',
+      lastName: 'Xuan',
+      email: 'cao.xuan@example.com',
+      password: 'hashedpassword523',
+      phoneNumber: '0905432109',
+      gender: false,
+      role: 'Customer',
+      image: 'user_image_42.jpg',
+    });
+
     await user1.save();
     await user2.save();
+    await user3.save();
+    await user4.save();
+    await user5.save();
+    await user6.save();
+    await user7.save();
+    await user8.save();
+    await user9.save();
+    await user10.save();
+    await user11.save();
+    await user11.save();
+    await user12.save();
+    await user13.save();
+    await user14.save();
+    await user15.save();
+    await user16.save();
+    await user17.save();
+    await user18.save();
+    await user19.save();
+    await user20.save();
+    await user21.save();
+    await user22.save();
+    await user23.save();
+    await user24.save();
+    await user25.save();
+    await user26.save();
+    await user27.save();
+    await user28.save();
+    await user29.save();
+    await user30.save();
+    await user31.save();
+    await user32.save();
+    await user33.save();
+    await user34.save();
+    await user35.save();
+    await user36.save();
+    await user37.save();
+    await user38.save();
+    await user39.save();
+    await user40.save();
+    await user41.save();
+    await user42.save();
 
     // Tạo dữ liệu danh mục
     const category1 = new Category({
