@@ -16,28 +16,6 @@ import sendEmail from "../utils/mailUtils.ts"; // Import mail utils
 const otpStorage: Record<string, string> = {};
 
 /** Đăng ký: kiểm tra, sinh OTP, gửi mail */
-// export const registerUserService = async (dtoData: RegisterUserRequestDTO) => {
-//   const { email, password, firstName, lastName } = dtoData;
-//   console.log(dtoData);
-//   console.log(email);
-//   console.log(password);
-//   console.log(firstName);
-//   console.log(lastName);
-//   if (!email || !password || !firstName || !lastName) {
-//     throw new Error("All fields are required");
-//   }
-//   if (await isEmailExist(email)) {
-//     throw new Error("Email is already registered");
-//   }
-//   const otp = OTP.generate(6, {
-//     digits: true,
-//     upperCase: false,
-//     specialChars: false,
-//   });
-//   otpStorage[email] = otp;
-//   await sendEmail(email, "Your OTP code", otp); // Chỉnh sửa thêm subject và otp
-//   return { message: "OTP sent to your email" };
-// };
 export const registerUserService = async (dtoData: RegisterUserRequestDTO) => {
   const { email, password, firstName, lastName } = dtoData;
 
@@ -112,26 +90,7 @@ export const verifyOtpService = async (dtoData: RegisterUserRequestDTO) => {
   }
 };
 
-/** Đăng nhập */
-// export const loginUserService = async (payload: {
-//   email: string;
-//   password: string;
-// }) => {
-//   const user = await findUserByEmail(payload.email);
-//   if (!user) throw new Error("User not found");
 
-//   const ok = await bcrypt.compare(payload.password, user.password);
-//   if (!ok) throw new Error("Invalid credentials");
-
-//   const jti = crypto.randomUUID();
-
-//   const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET as string, {
-//     expiresIn: "1h",
-//     jwtid: jti,
-//   });
-
-//   return { token };
-// };
 export const loginUserService = async (payload: {
   email: string;
   password: string;
