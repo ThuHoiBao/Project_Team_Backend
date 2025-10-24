@@ -21,7 +21,7 @@ const connectDB = async (): Promise<void> => {
     
 
     // await seedProducts();  
-     await reseedOrderItemsForSpecificOrder();
+    //  await reseedOrderItemsForSpecificOrder();
   } catch (error: any) {  // để TypeScript không báo lỗi khi log error
     console.log("Unable to connect to MongoDB:", error.message || error);
   }

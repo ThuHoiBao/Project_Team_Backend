@@ -25,6 +25,7 @@ import "./models/ImageProduct.ts";
 import "./models/Feedback.ts";
 import { Server } from 'http';
 import { initSocket } from "./socket";
+import cartRoutes from './route/cartRoutes.js';
 
 
 // Tạo __dirname (vì dùng ES module)
@@ -56,7 +57,7 @@ app.get('/upload', (req, res) => {
 app.use('/api', orderRoutes);
 app.use("/api/feedback", feedbackRoute);
 app.use("/api/notifications", notificationRoutes);
-
+app.use('/api/cart', cartRoutes);
 
 const server = http.createServer(app);
 initSocket(server);
