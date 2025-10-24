@@ -1,6 +1,6 @@
 import express from 'express';
 import multer from 'multer';
-import authenticateToken from '../middleware/authenticateToken.ts'; // Import middleware
+import authenticateToken from '../middleware/authenticateToken.js'; // Import middleware
 import { getMyInfo, updateMyInfo, uploadMyImage } from '../controller/myAccountController.ts';
 import { logout } from '../controller/authController.ts';
 const router = express.Router();

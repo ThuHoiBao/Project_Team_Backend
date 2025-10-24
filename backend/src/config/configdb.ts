@@ -18,10 +18,6 @@ const connectDB = async (): Promise<void> => {
     await mongoose.connect(mongoURI);
 
     console.log("MongoDB connection established successfully.");
-    
-
-    // await seedProducts();  
-    // await reseedOrderItemsForSpecificOrder();
   } catch (error: any) {  // để TypeScript không báo lỗi khi log error
     console.log("Unable to connect to MongoDB:", error.message || error);
   }

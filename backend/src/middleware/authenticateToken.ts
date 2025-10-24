@@ -1,32 +1,41 @@
 import jwt, { JwtPayload } from "jsonwebtoken";
+import { Request, Response, NextFunction } from "express";
 import InvalidatedToken from "../models/invalidatedToken.js";
 
-const authenticateToken = (req, res, next) => {
-  // Lấy token từ header Authorization
-  const token = req.headers['authorization']?.split(' ')[1]; // Lấy token từ header (Bearer token)
+export interface AuthenticatedRequest extends Request {
+  user?: JwtPayload | string; 
+}
 
-  if (!token) return res.status(403).json({ message: 'Token is required' });
+export const authenticateToken = (
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  const token = req.headers["authorization"]?.split(" ")[1];
 
-  // Xác thực token
-  jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
-    if (err) return res.status(403).json({ message: 'Invalid or expired token' });
+  if (!token) {
+    return res.status(403).json({ message: "Token is required" });
+  }
 
-    const payload = decoded as JwtPayload; // ép kiểu để lấy jti
+  jwt.verify(token, process.env.JWT_SECRET as string, async (err, decoded) => {
+    if (err) {
+      return res.status(403).json({ message: "Invalid or expired token" });
+    }
+
+    const payload = decoded as JwtPayload;
     const jti = payload.jti;
+
     if (!jti) {
       return res.status(403).json({ message: "Token missing jti" });
     }
 
+    const exists = await InvalidatedToken.exists({ id: jti });
+    if (exists) {
+      return res.status(403).json({ message: "Token has been revoked" });
+    }
 
-    // Kiểm tra token đã bị vô hiệu hóa chưa
-      const exists = await InvalidatedToken.exists({ id: jti });
-      if (exists) {
-        return res.status(403).json({ message: "Token has been revoked" });
-      }
-
-
-    req.user = payload;  // Lưu thông tin người dùng trong request
-    next();  // Tiếp tục xử lý request
+    req.user = payload;
+    next();
   });
 };
 

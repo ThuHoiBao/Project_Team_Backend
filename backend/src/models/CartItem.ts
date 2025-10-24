@@ -1,29 +1,24 @@
 import mongoose, {Schema, Document, Types}  from "mongoose";
-import AutoIncrementFactory from "mongoose-sequence";
+import { Size } from "./ProductSize";
 
-const AutoIncrement = AutoIncrementFactory(mongoose); 
-
-export interface ICartItem extends Document{
+export interface ICartItem extends Document {
     cart: Types.ObjectId;
     product: Types.ObjectId;
     quantity: number;
+    size: string;
 }
 
 const CartItemSchema: Schema = new Schema<ICartItem>(
-  {
-    cart: {type: mongoose.Schema.Types.ObjectId, ref: "Cart", required: true},
-    product: {type: mongoose.Schema.Types.ObjectId, ref: "Product", required: true},
-    quantity: {type: Number, required: true, min: 1},
-  },
-  {
-    timestamps: true,
-  }
-)
-
-CartItemSchema.plugin(AutoIncrement, {
-  inc_field: "cartItemID", 
-  start_seq: 1,           
-});
+{
+  cart: { type: mongoose.Schema.Types.ObjectId, ref: "Cart", required: true },
+  product: { type: mongoose.Schema.Types.ObjectId, ref: "Product", required: true },
+  quantity: { type: Number, required: true, min: 1 },
+  size: { type: String, required: true },
+},
+{
+  timestamps: true,
+}
+);
 
 
 CartItemSchema.virtual("id").get(function (this: any) {
