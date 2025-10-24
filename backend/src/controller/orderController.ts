@@ -16,6 +16,7 @@ export const cancelOrderController = async (req: Request, res: Response) => {
     });
   } catch (error: any) {
     res.status(400).json({ message: error.message });
+    console.log(error)
   }
 };
 // Lấy tất cả đơn hàng của người dùng

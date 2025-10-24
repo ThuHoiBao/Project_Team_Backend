@@ -3,11 +3,11 @@ import { OrderResponseDTO } from '../dto/responseDTO/OrderResponseDTO';
 import { OrderItemResponseDTO } from '../dto/responseDTO/OrderItemResponseDTO';
 import db from "../models/index.ts";
 const {Order,Payment,Coin}:any = db;
-import { findOrderById, updateOrderStatus, updateUserCoin } from "../repository/orderRepository";
+import { findOrderById,findOrderByIdOne, updateProductSizeQuantity,updateOrderStatus, updateUserCoin } from "../repository/orderRepository";
 import { OrderStatus } from "../models/Order";
 
 export const cancelOrder = async (userId: string, orderId: string) => {
-  const order = await findOrderById(orderId);
+  const order = await findOrderByIdOne(orderId);
   console.log("id user: "+userId)
   console.log("id order: "+orderId)
   if (!order) {
@@ -23,9 +23,14 @@ export const cancelOrder = async (userId: string, orderId: string) => {
     const amount = Number(order.payment.amount) || 0;
     console.log(amount)
     if (amount > 0) {
-      await updateUserCoin(userId, amount); // Cộng coin cho user
+      const coinToAdd = amount / 1000;
+      console.log(amount)
+      await updateUserCoin(userId, coinToAdd); // Cộng coin cho user
     }
   }
+
+  // Cập nhật số lượng sản phẩm trong ProductSize
+  await updateProductSizeQuantity(order.orderItems); // Cập nhật số lượng sản phẩm trong ProductSize
 
   // Cập nhật trạng thái CANCELLED
   const updatedOrder = await updateOrderStatus(orderId, OrderStatus.CANCELLED);
@@ -64,8 +69,8 @@ export const getOrdersByUserId = async (userId: string): Promise<OrderResponseDT
 
       orderResponse.paymentMethod = order.payment?.paymentMethod || "";
       orderResponse.amount = order.payment?.amount || "";
-      orderResponse.discount = order.coupon?.discountValue || 0;
-
+      orderResponse.discount = order.payment?.coponValue || 0;
+      orderResponse.cancellationReason=order.cancellationReason||"";
       let totalPrice = 0;
 
       orderResponse.orderItems = order.orderItems.map((item: any) => {
