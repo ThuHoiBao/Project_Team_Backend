@@ -1,7 +1,7 @@
 // repository/orderRepository.ts
 import { IOrder } from "../models/Order";
 import db from "../models/index.ts";
-const {Order,Coin,ProductSize,Product }:any = db;
+const {Order,Coin,ProductSize,Product,Payment }:any = db;
 
 // Lấy tất cả đơn hàng của người dùng theo userId
 export const findOrdersByUserId = async (userId: string) => {
