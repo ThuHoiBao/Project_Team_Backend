@@ -6,7 +6,7 @@ import { getOrdersByUser,cancelOrderController } from '../controller/orderContro
 const router = express.Router();
 
 // Lấy tất cả đơn hàng của người dùng
-router.get('/orders/user/:userId', getOrdersByUser);
-// Hủy đơn hàng
-router.post("/orders/cancel", cancelOrderController);
+// router.get('/orders/user/:userId', getOrdersByUser);
+// // Hủy đơn hàng
+// router.post("/orders/cancel", cancelOrderController);
 export default router;
