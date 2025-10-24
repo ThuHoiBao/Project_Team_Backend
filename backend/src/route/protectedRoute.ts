@@ -4,7 +4,7 @@ import authenticateToken from '../middleware/authenticateToken.js'; // Import mi
 import { getMyInfo, updateMyInfo, uploadMyImage } from '../controller/myAccountController.ts';
 import { logout } from '../controller/authController.ts';
 const router = express.Router();
-
+import { getOrdersByUser,cancelOrderController } from '../controller/orderController.ts';
 // Sử dụng memory storage để multer không tạo file tạm
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
@@ -18,6 +18,9 @@ router.get('/protected', authenticateToken, (req, res) => {
 // đường dẫn đến trang thông tin cá nhân
 router.get('/myInfo', authenticateToken, getMyInfo);
 router.put('/myinfo', authenticateToken, updateMyInfo);
+router.get('/orders/user/:userId',authenticateToken, getOrdersByUser);
+// Hủy đơn hàng
+router.post("/orders/cancel",authenticateToken, cancelOrderController);
 // Route upload ảnh
 router.post(
   '/myinfo/upload-image',

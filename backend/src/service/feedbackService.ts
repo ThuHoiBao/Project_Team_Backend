@@ -33,9 +33,9 @@ export class FeedbackService {
       //  Cộng Xu nếu hợp lệ
     if (comment.length >= 50) {
     if (relatedFiles.length === 1) {
-        await feedbackRepo.updateUserCoin(userId, 100); // đúng 1 ảnh → 100 Xu
+        await feedbackRepo.updateUserCoin(userId, 1); // đúng 1 ảnh → 100 Xu
     } else if (relatedFiles.length > 1) {
-        await feedbackRepo.updateUserCoin(userId, 200); // nhiều hơn 1 ảnh → 200 Xu
+        await feedbackRepo.updateUserCoin(userId, 2); // nhiều hơn 1 ảnh → 200 Xu
     }
     }
       const orderObjectId = typeof orderId === "string"

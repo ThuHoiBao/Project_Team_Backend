@@ -16,15 +16,18 @@ export const cancelOrderController = async (req: Request, res: Response) => {
     });
   } catch (error: any) {
     res.status(400).json({ message: error.message });
+    console.log(error)
   }
 };
 // Lấy tất cả đơn hàng của người dùng
-export const getOrdersByUser = async (req: Request, res: Response) => {
+export const getOrdersByUser = async (req :any , res: any) => {
   try {
-    const userId = req.params.userId; // Lấy userId từ params
+    const userId = req.user.id 
+    console.log(userId)// Lấy userId từ params
     const orders = await getOrdersByUserId(userId);
     res.json(orders);  // Trả về danh sách các đơn hàng
   } catch (error : any) {
     res.status(500).json({ message: error.message });
+    console.log(error)
   }
 };

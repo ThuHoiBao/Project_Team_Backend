@@ -35,6 +35,8 @@ export const getFilteredProducts = async (options: FilterOptions) => {
   // lọc category
   if (categories && categories.length > 0) {
     filter.category = { $in: categories.map((id) => new mongoose.Types.ObjectId(id)) };
+   
+
   }
 
   // lọc theo khoảng giá

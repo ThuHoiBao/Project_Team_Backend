@@ -11,6 +11,7 @@ export interface IPayment extends Document {
   paymentMethod: PaymentMethod;
   paymentDate: Date;
   amount: number;
+  coponValue: number;
   status: boolean;
 }
 
@@ -24,6 +25,7 @@ const PaymentSchema = new Schema<IPayment>(
     },
     paymentDate: { type: Date, default: Date.now },
     amount: { type: Number, required: true },
+    coponValue: { type: Number, required: false },
     status: { type: Boolean, default: false },
   },
   { timestamps: true }

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import Notification from "../models/Notification";
-import User from "../models/user";
+import User from "../models/User";
 import { getIO } from "../socket";
 
 // ✅ Gửi thông báo đến tất cả user

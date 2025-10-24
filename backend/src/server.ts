@@ -40,8 +40,34 @@ const app = express();
 // Cấu hình EJS
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views', 'users'));
+
+// 1. Cấu hình CORS đầy đủ
+const corsOptions = {
+  origin: process.env.FRONTEND_URL || 'http://localhost:3000', // URL frontend
+  credentials: true, // Cho phép gửi cookies
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  exposedHeaders: ['Content-Range', 'X-Content-Range'],
+  maxAge: 600 // Cache preflight request 10 phút
+};
+
+app.use(cors(corsOptions));
+
+// 2. Thêm security headers cho Google OAuth
+app.use((req, res, next) => {
+  // Quan trọng cho Google One Tap
+  res.setHeader('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
+  res.setHeader('Cross-Origin-Embedder-Policy', 'unsafe-none');
+  
+  // Security headers khác (tùy chọn nhưng nên có)
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('X-XSS-Protection', '1; mode=block');
+  
+  next();
+});
+
 // Middleware
-app.use(cors());
 app.use(express.json());
 
 // Routes
@@ -61,9 +87,6 @@ app.use('/api/cart', cartRoutes);
 
 const server = http.createServer(app);
 initSocket(server);
-
-
-
 
 
 const PORT = process.env.PORT || 8088;
