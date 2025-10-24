@@ -1,6 +1,6 @@
 {
   "development": {
-    "MONGO_URI": "mongodb://127.0.0.1:27017/DB_Futu"
+    "MONGO_URI": "mongodb://127.0.0.1:27017/DB_02"
   },
   "test": {
     "MONGO_URI": "mongodb://127.0.0.1:27017/myapp_test"

@@ -15,6 +15,7 @@ export interface IOrder extends Document {
     user: mongoose.Types.ObjectId;
     orderStatus: OrderStatus;
     orderDate: Date;
+    payment: mongoose.Types.ObjectId;
     addressDelivery: mongoose.Types.ObjectId;
     coupon: mongoose.Types.ObjectId;
     cancellationReason?: string;
@@ -38,6 +39,7 @@ const OrderSchema: Schema = new Schema<IOrder>(
       enum: Object.values(OrderStatus),
       default: OrderStatus.ORDERED,
     },
+    payment: { type: Schema.Types.ObjectId, ref: "Payment",  },
     orderDate: { type: Date, default: Date.now },
     addressDelivery:  { type: Schema.Types.ObjectId, ref: "AddressDelivery", required: true },
     coupon:  { type: Schema.Types.ObjectId, ref: "Coupon" },
