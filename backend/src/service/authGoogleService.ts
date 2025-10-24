@@ -62,7 +62,7 @@ export const googleLoginService = async (idToken: string): Promise<GoogleLoginRe
     };
 
     const token = jwt.sign(payloadJwt, JWT_SECRET as string, {
-      expiresIn: "7d",
+      expiresIn: "1h",
     });
 
     return { token, user };

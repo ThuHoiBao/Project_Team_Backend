@@ -122,17 +122,21 @@ export const loginUserService = async (payload: {
   const ok = await bcrypt.compare(password, user.password);
   if (!ok) throw new Error("Sai mật khẩu hoặc thông tin đăng nhập");
 
-  // Tạo JWT token
+  // Sinh JWT có email + role + jti
   const jti = crypto.randomUUID();
-  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET as string, {
+  const payloadJwt = {
+    id: user._id,
+    email: user.email,
+    role: user.role,
+    jti,
+  };
+
+  const token = jwt.sign(payloadJwt, process.env.JWT_SECRET as string, {
     expiresIn: "1h",
-    jwtid: jti,
   });
 
   return { token };
 };
-
-
 
 // Quên mật khẩu và gửi OTP
 export const forgotPasswordService = async (data) => {
