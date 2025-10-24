@@ -10,6 +10,10 @@ import {
   logoutUserService,
 } from "../service/authService.ts";
 
+import { googleLoginService } from "../../src/service/authGoogleService.js";
+import { Request, Response } from "express";
+
+
 
 // Gửi OTP và đăng ký người dùng
 export const registerUser = async (req, res) => {
@@ -79,5 +83,25 @@ export const logout = async (req, res) => {
   } catch (err) {
     console.error("Logout error:", err);
     res.status(500).json({ message: "Logout failed" });
+  }
+};
+
+
+export const googleLogin = async (req: Request, res: Response) => {
+  const { credential } = req.body as { credential: string };
+
+  if (!credential) {
+    return res.status(400).json({ message: "Missing Google credential (id_token)" });
+  }
+
+  try {
+    // Gọi service xử lý Google login
+    const { token, user } = await googleLoginService(credential);
+
+    // Trả về token + thông tin user
+    return res.status(200).json({ token, user });
+  } catch (error: any) {
+    console.error("Google login controller error:", error.message || error);
+    return res.status(500).json({ message: "Google login failed" });
   }
 };
