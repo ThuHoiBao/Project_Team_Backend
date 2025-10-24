@@ -27,5 +27,6 @@ export const getOrdersByUser = async (req: Request, res: Response) => {
     res.json(orders);  // Trả về danh sách các đơn hàng
   } catch (error : any) {
     res.status(500).json({ message: error.message });
+    console.log(error)
   }
 };

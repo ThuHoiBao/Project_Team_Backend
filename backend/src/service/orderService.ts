@@ -69,7 +69,8 @@ export const getOrdersByUserId = async (userId: string): Promise<OrderResponseDT
 
       orderResponse.paymentMethod = order.payment?.paymentMethod || "";
       orderResponse.amount = order.payment?.amount || "";
-      orderResponse.discount = order.payment?.coponValue || 0;
+      const discountValue = order.coupon?.discountValue || 0;
+      const maxDiscountValue = order.coupon?.maxDiscount || 0;
       orderResponse.cancellationReason=order.cancellationReason||"";
       let totalPrice = 0;
 
@@ -90,8 +91,13 @@ export const getOrdersByUserId = async (userId: string): Promise<OrderResponseDT
         totalPrice += item.price * item.quantity;
         return dto;
       });
-
       orderResponse.totalPrice = totalPrice;
+      const discountAmount = (discountValue / 100) * totalPrice;  // Giảm giá theo phần trăm
+      const discount = Math.min(discountAmount, maxDiscountValue);  // Giảm giá tối đa không vượt quá maxDiscountValue
+      orderResponse.discount = discount; // Gán giá trị giảm giá vào orderResponse
+
+      //orderResponse.totalPrice = totalPrice - discount; // Tính giá sau khi giảm
+
       return orderResponse.toPlain();
     });
   } catch (error: any) {
