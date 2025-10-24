@@ -12,6 +12,7 @@ import { ImageProduct } from "./ImageProduct.ts";
 import {Coin} from "./Coin.ts"
 import {ImageFeedback} from "./ImageFeedback.ts"
 import { Feedback } from "./Feedback.ts";
+import ProductSize from "./ProductSize.ts";
 // Object db gom tất cả model
 const db = {
     mongoose,
@@ -26,6 +27,7 @@ const db = {
     Coin,
     ImageFeedback,
     Feedback,
+    ProductSize
 };
 
 
