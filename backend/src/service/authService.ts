@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import OTP from "otp-generator";
 import jwt from "jsonwebtoken";
+import { Coin } from "../models/Coin.js";
 import { RegisterUserRequestDTO } from "../dto/requestDTO/registerUserRequestDTO.ts";
 
 import {
@@ -44,6 +45,7 @@ export const registerUserService = async (dtoData: RegisterUserRequestDTO) => {
 
   // Kiểm tra email đã tồn tại
   if (await isEmailExist(trimmedEmail)) {
+
     throw new Error("Email đã được đăng ký");
   }
 
@@ -81,6 +83,10 @@ export const verifyOtpService = async (dtoData: RegisterUserRequestDTO) => {
       password: hashedPassword,
       firstName,
       lastName,
+    });
+    await Coin.create({
+      User: newUser._id,
+      value: 0,
     });
     return {
       message: "OTP verified successfully. You can now create your account.",
@@ -150,7 +156,7 @@ export const forgotPasswordService = async (data) => {
 
 export const resetPasswordService = async (data) => {
   const { email, password } = data;
-  
+
   const user = await findUserByEmail(email);
   if (!user) throw new Error("User not found");
 
