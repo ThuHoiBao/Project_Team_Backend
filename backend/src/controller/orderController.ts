@@ -20,14 +20,25 @@ export const cancelOrderController = async (req: Request, res: Response) => {
   }
 };
 // Lấy tất cả đơn hàng của người dùng
-export const getOrdersByUser = async (req :any , res: any) => {
+export const getOrdersByUser = async (req: any, res: any) => {
   try {
-    const userId = req.user.id 
-    console.log(userId)// Lấy userId từ params
+    const userId = req.user.id; // Lấy userId từ thông tin người dùng (được xác thực trước đó)
+    console.log(userId); // In ra userId để kiểm tra
+
+    // Lấy các đơn hàng của người dùng từ database
     const orders = await getOrdersByUserId(userId);
-    res.json(orders);  // Trả về danh sách các đơn hàng
-  } catch (error : any) {
+
+    // Gán userId vào response trả về
+    const response = {
+      userId: userId,  // Thêm userId vào response
+      orders: orders   // Danh sách đơn hàng
+    };
+
+    
+    res.json(response);  // Trả về response với userId và danh sách đơn hàng
+  } catch (error: any) {
     res.status(500).json({ message: error.message });
-    console.log(error)
+    console.log(error);
   }
 };
+
