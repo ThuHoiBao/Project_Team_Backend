@@ -1,7 +1,21 @@
 
 # Project Team Backend
 
+UTEShop is an e-commerce web application that allows users to buy shirts online quickly, conveniently, and securely.
 
+
+
+## 🚀 Key Features
+
+- 👕 Browse and search shirts by category, style, and size.  
+- 🛒 Add products to the shopping cart and proceed to checkout.  
+- ❤️ Manage favorites, view and submit feedback or reviews.  
+- 🔐 User authentication (register, login, OTP verification, password recovery).  
+- 📦 Manage and track orders.  
+- 🔔 Real-time notifications using Socket.io.  
+- 🌗 Modern, responsive design that works across all devices.
+
+---
 ## Technology Stack
 
 - **Framework:** Express.js
