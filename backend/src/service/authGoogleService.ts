@@ -4,6 +4,7 @@ import { OAuth2Client } from 'google-auth-library';
 import User, { IUser } from "../models/User.js";
 import dotenv from "dotenv";
 dotenv.config();
+import { Coin } from "../models/Coin.js";
 
 const JWT_SECRET = process.env.JWT_SECRET!;
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID!;
@@ -44,6 +45,10 @@ export const googleLoginService = async (idToken: string): Promise<GoogleLoginRe
         googleId: sub,
         provider: "google",
       }) as IUser;
+      await Coin.create({
+            User: user._id,
+            value: 0,
+          });
     } else if (!user.googleId) {
       user.googleId = sub;
       user.provider = "google";
