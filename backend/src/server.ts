@@ -43,12 +43,22 @@ app.set('views', path.join(__dirname, 'views', 'users'));
 
 // 1. Cấu hình CORS đầy đủ
 const corsOptions = {
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000', // URL frontend
-  credentials: true, // Cho phép gửi cookies
+  origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
+    const allowedOrigins = [
+      'http://localhost:3000',
+      'http://localhost:4000',
+    ];
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true); // Cho phép
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   exposedHeaders: ['Content-Range', 'X-Content-Range'],
-  maxAge: 600 // Cache preflight request 10 phút
+  maxAge: 600,
 };
 
 app.use(cors(corsOptions));
