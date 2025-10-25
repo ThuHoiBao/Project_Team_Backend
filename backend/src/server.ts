@@ -14,6 +14,7 @@ import feedbackRoutes from './route/feedbackRoute.ts'
 import feedbackRoute from './route/feedbackRoutes.ts'
 import categoryRoutes from './route/categoryRoutes.ts'
 import notificationRoutes from "./route/notificationRoutes";
+import coinRoutes from "./route/coinRoutes";
 import path from 'path';
 import { fileURLToPath } from 'url';
 import {seedProducts} from './seeders/product.seed.ts';
@@ -83,7 +84,7 @@ app.use(express.json());
 // Routes
 // app.use('/api',productRoutes)
 app.use('/api/auth',authRoutes); 
-app.use('/api',upLoadImage, productRoutes, protectedRoutes, userRoutes, imageFeedbackRoutes, feedbackRoutes, categoryRoutes)
+app.use('/api',upLoadImage, productRoutes, protectedRoutes, userRoutes, imageFeedbackRoutes, feedbackRoutes, categoryRoutes, coinRoutes)
 
 // Route test upload form
 app.get('/upload', (req, res) => {
