@@ -15,3 +15,19 @@ export const getCoinBalanceForUser = async (userId: string): Promise<number> => 
         throw new Error('Database error while fetching coin balance.');
     }
 };
+
+
+export const getCoinService = async (userId: string) => {
+    const coin = await Coin.find({ User: userId })
+    if (!coin)
+        return {
+            success: false,
+            message: "Không tìm thấy dữ liệu",
+        };
+    else
+        return {
+            success: true,
+            data: coin
+        }
+
+}

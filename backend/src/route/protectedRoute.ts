@@ -18,7 +18,7 @@ router.get('/protected', authenticateToken, (req, res) => {
 // đường dẫn đến trang thông tin cá nhân
 router.get('/myInfo', authenticateToken, getMyInfo);
 router.put('/myinfo', authenticateToken, updateMyInfo);
-router.get('/orders/user/:userId',authenticateToken, getOrdersByUser);
+router.get('/orders/user',authenticateToken, getOrdersByUser);
 // Hủy đơn hàng
 router.post("/orders/cancel",authenticateToken, cancelOrderController);
 // Route upload ảnh

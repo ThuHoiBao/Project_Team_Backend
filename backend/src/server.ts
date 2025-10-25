@@ -14,6 +14,7 @@ import feedbackRoutes from './route/feedbackRoute.ts'
 import feedbackRoute from './route/feedbackRoutes.ts'
 import categoryRoutes from './route/categoryRoutes.ts'
 import notificationRoutes from "./route/notificationRoutes";
+import coinRoutes from "./route/coinRoutes";
 import path from 'path';
 import { fileURLToPath } from 'url';
 import {seedProducts} from './seeders/product.seed.ts';
@@ -46,12 +47,22 @@ app.set('views', path.join(__dirname, 'views', 'users'));
 
 // 1. Cấu hình CORS đầy đủ
 const corsOptions = {
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000', // URL frontend
-  credentials: true, // Cho phép gửi cookies
+  origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
+    const allowedOrigins = [
+      'http://localhost:3000',
+      'http://localhost:4000',
+    ];
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true); // Cho phép
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   exposedHeaders: ['Content-Range', 'X-Content-Range'],
-  maxAge: 600 // Cache preflight request 10 phút
+  maxAge: 600,
 };
 
 app.use(cors(corsOptions));
@@ -76,7 +87,7 @@ app.use(express.json());
 // Routes
 // app.use('/api',productRoutes)
 app.use('/api/auth',authRoutes); 
-app.use('/api',upLoadImage, productRoutes, protectedRoutes, userRoutes, imageFeedbackRoutes, feedbackRoutes, categoryRoutes)
+app.use('/api',upLoadImage, productRoutes, protectedRoutes, userRoutes, imageFeedbackRoutes, feedbackRoutes, categoryRoutes, coinRoutes)
 
 // Route test upload form
 app.get('/upload', (req, res) => {

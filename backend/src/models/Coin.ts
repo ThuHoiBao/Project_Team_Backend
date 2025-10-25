@@ -11,6 +11,7 @@ const CoinSchema: Schema = new Schema<Coin>(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
+      unique: true,
     },
     value: {
       type: Number,
