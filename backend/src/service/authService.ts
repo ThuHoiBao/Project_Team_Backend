@@ -96,11 +96,7 @@ export const verifyOtpService = async (dtoData: RegisterUserRequestDTO) => {
   }
 };
 
-
-export const loginUserService = async (payload: {
-  email: string;
-  password: string;
-}) => {
+export const loginUserService = async (payload: { email: string; password: string }) => {
   const email = payload.email.trim();
   const password = payload.password.trim();
 
@@ -124,6 +120,11 @@ export const loginUserService = async (payload: {
   const user = await findUserByEmail(email);
   if (!user) throw new Error("Không tìm thấy người dùng");
 
+  // Kiểm tra provider Google
+  if (user.provider === "google" && !user.password) {
+    throw new Error("Account registered via Google. Please login with Google.");
+  }
+
   // Kiểm tra mật khẩu
   const ok = await bcrypt.compare(password, user.password);
   if (!ok) throw new Error("Sai mật khẩu hoặc thông tin đăng nhập");
@@ -143,6 +144,7 @@ export const loginUserService = async (payload: {
 
   return { token };
 };
+
 
 // Quên mật khẩu và gửi OTP
 export const forgotPasswordService = async (data) => {
