@@ -26,6 +26,9 @@ import "./models/Feedback.ts";
 import { Server } from 'http';
 import { initSocket } from "./socket";
 import cartRoutes from './route/cartRoutes.js';
+import couponRoutes from './route/couponRoutes';
+import coinRoutes from './route/coinRoutes.js';
+import addressDeliveryRoutes from './route/addressDeliveryRoutes.js';
 
 
 // Tạo __dirname (vì dùng ES module)
@@ -84,6 +87,9 @@ app.use('/api', orderRoutes);
 app.use("/api/feedback", feedbackRoute);
 app.use("/api/notifications", notificationRoutes);
 app.use('/api/cart', cartRoutes);
+app.use('/api/coupons', couponRoutes);
+app.use('/api/coins', coinRoutes); 
+app.use('/api/addresses', addressDeliveryRoutes);
 
 const server = http.createServer(app);
 initSocket(server);
