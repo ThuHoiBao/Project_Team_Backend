@@ -1,6 +1,6 @@
-import Product, { IProduct } from "../models/Product"; 
-import elasticClient from "../config/elasticClient";
-import { removeVietnameseAccents } from "../utils/textUtils"; // Import function helper
+import Product, { IProduct } from "../models/Product";
+import Fuse from "fuse.js";
+import { removeVietnameseAccents } from "../utils/textUtils";
 
 interface GetProductsParams {
   categoryId?: string;
@@ -12,6 +12,23 @@ interface GetProductsParams {
   newest?: boolean;
 }
 
+interface ProductWithNormalized {
+  productName: string;
+  description?: string;
+  price: number;
+  createDate?: Date;
+  productNameNormalized: string;
+  descriptionNormalized: string;
+  [key: string]: any; // Cho phép các fields khác từ IProduct
+}
+
+interface GetProductsResult {
+  products: IProduct[];
+  total: number;
+  currentPage: number;
+  totalPages: number;
+}
+
 export const getProducts = async ({
   categoryId,
   page = 1,
@@ -20,109 +37,125 @@ export const getProducts = async ({
   priceIncrease = false,
   priceDecrease = false,
   newest = false,
-}: GetProductsParams) => {
+}: GetProductsParams): Promise<GetProductsResult> => {
   const skip = (page - 1) * limit;
 
-  // Khởi tạo queryBody
-  const queryBody: any = {
-    from: skip,
-    size: limit,
-    sort: [],
-    query: {
-      bool: {
-        filter: categoryId ? [{ term: { category: categoryId } }] : [],
-      },
-    },
-  };
-
-  // Sắp xếp
-  if (priceIncrease) {
-    queryBody.sort.push({ price: { order: "asc" } });
-  } else if (priceDecrease) {
-    queryBody.sort.push({ price: { order: "desc" } });
-  } else if (newest) {
-    queryBody.sort.push({ createDate: { order: "desc" } });
+  // Bước 1: Lấy products từ MongoDB với filter cơ bản
+  const query: Record<string, any> = { status: true };
+  
+  if (categoryId) {
+    query.category = categoryId;
   }
 
-  // Tìm kiếm theo productName
-  if (q) {
-    const normalizedQuery = removeVietnameseAccents(q); // Normalize query string
-    const queryTerms = normalizedQuery.trim().split(/\s+/);
+  let allProducts: IProduct[] = await Product.find(query)
+    .populate({
+      path: "listImage",
+      select: "imageProduct -_id",
+    })
+    .lean();
+
+  // Bước 2: Fuzzy search nếu có query
+  if (q && q.trim()) {
+    const normalizedQuery = removeVietnameseAccents(q.trim().toLowerCase());
     
-    queryBody.query.bool.must = queryTerms.map((term) => ({
-      bool: {
-        should: [
-          // Search trong field productName gốc (có dấu)
-          { prefix: { productName: term.toLowerCase() } },
-          {
-            fuzzy: {
-              productName: {
-                value: term.toLowerCase(),
-                fuzziness: "AUTO",
-                prefix_length: 1,
-              },
-            },
-          },
-          { wildcard: { productName: `*${term.toLowerCase()}*` } },
-          
-          // Search trong field productNameNormalized (không dấu) - QUAN TRỌNG
-          { prefix: { productNameNormalized: term } },
-          {
-            fuzzy: {
-              productNameNormalized: {
-                value: term,
-                fuzziness: "AUTO",
-                prefix_length: 1,
-              },
-            },
-          },
-          { wildcard: { productNameNormalized: `*${term}*` } },
-          
-          // Có thể thêm search trong description nếu muốn
-          { wildcard: { descriptionNormalized: `*${term}*` } },
-        ],
-        minimum_should_match: 1,
-      },
+    // Cấu hình Fuse.js - Tối ưu cho exact match và word boundary
+    const fuseOptions = {
+      keys: [
+        {
+          name: "productNameNormalized",
+          weight: 1,
+        },
+        {
+          name: "productName",
+          weight: 0.8,
+        },
+        {
+          name: "descriptionNormalized",
+          weight: 0.2,
+        },
+      ],
+      threshold: 0.3, // Chặt chẽ hơn (giảm từ 0.4 xuống 0.3)
+      distance: 50, // Giảm distance để ưu tiên exact match
+      minMatchCharLength: 1,
+      includeScore: true,
+      ignoreLocation: true, // Quan trọng: tìm match ở bất kỳ vị trí nào
+      findAllMatches: true, // Tìm tất cả matches
+      useExtendedSearch: false, // Tắt extended search cho đơn giản
+    };
+
+    // Thêm field normalized vào mỗi product
+    const productsWithNormalized = allProducts.map((p: any) => ({
+      ...p,
+      productNameNormalized: removeVietnameseAccents((p.productName || "").toLowerCase()),
+      descriptionNormalized: removeVietnameseAccents((p.description || "").toLowerCase()),
     }));
-  } else {
-    if (!queryBody.query.bool.must) {
-      queryBody.query = { bool: queryBody.query.bool };
-      queryBody.query.bool.must = [{ match_all: {} }];
+
+    // Khởi tạo Fuse
+    const fuse = new Fuse(productsWithNormalized, fuseOptions);
+
+    // Search với pattern matching để ưu tiên exact word match
+    const searchPattern = normalizedQuery
+      .split(/\s+/)
+      .map(word => `'${word}`) // Dùng single quote để search exact match
+      .join(" ");
+
+    let searchResults = fuse.search(searchPattern);
+    
+    // Nếu không tìm thấy với exact match, thử fuzzy search thông thường
+    if (searchResults.length === 0) {
+      searchResults = fuse.search(normalizedQuery);
     }
+
+    // Sort kết quả theo score (score thấp = match tốt hơn)
+    searchResults.sort((a, b) => {
+      const scoreA = a.score || 1;
+      const scoreB = b.score || 1;
+      
+      // Ưu tiên match chính xác toàn bộ query
+      const aExactMatch = a.item.productNameNormalized.includes(normalizedQuery);
+      const bExactMatch = b.item.productNameNormalized.includes(normalizedQuery);
+      
+      if (aExactMatch && !bExactMatch) return -1;
+      if (!aExactMatch && bExactMatch) return 1;
+      
+      // Ưu tiên match ở đầu tên
+      const aStartsWith = a.item.productNameNormalized.startsWith(normalizedQuery);
+      const bStartsWith = b.item.productNameNormalized.startsWith(normalizedQuery);
+      
+      if (aStartsWith && !bStartsWith) return -1;
+      if (!aStartsWith && bStartsWith) return 1;
+      
+      // Cuối cùng sort theo score
+      return scoreA - scoreB;
+    });
+    
+    // Lấy products từ kết quả search
+    allProducts = searchResults.map((result) => result.item);
+
+    console.log(`Fuzzy search found ${allProducts.length} products for query: "${q}"`);
   }
 
-  console.log("Elasticsearch query:", JSON.stringify(queryBody, null, 2)); // Debug log
+  // Bước 3: Sắp xếp
+  if (priceIncrease) {
+    allProducts.sort((a, b) => (a.price || 0) - (b.price || 0));
+  } else if (priceDecrease) {
+    allProducts.sort((a, b) => (b.price || 0) - (a.price || 0));
+  } else if (newest) {
+    allProducts.sort((a, b) => {
+      const dateA = new Date(a.createDate || 0).getTime();
+      const dateB = new Date(b.createDate || 0).getTime();
+      return dateB - dateA;
+    });
+  }
 
-  // Gọi Elasticsearch
-  const result = await elasticClient.search({
-    index: "products",
-    body: queryBody,
-  });
-
-  // const products = (result.hits.hits as any[]).map((hit) => ({
-  //   id: hit._id,
-  //   ...hit._source,
-  // }));
-
-  const productIds = (result.hits.hits as any[]).map((hit) => hit._id);
-
-  // Query lại MongoDB để lấy đầy đủ thông tin (populate hình ảnh)
-  const products = await Product.find({ _id: { $in: productIds } })
-  .populate({
-    path: "listImage",
-    select: "imageProduct -_id", // chỉ lấy field imageProduct, bỏ _id
-  })
-  .lean();
-
-
-  // Giữ nguyên thứ tự như Elasticsearch trả về
-  const productMap = new Map(products.map((p: any) => [p._id.toString(), p]));
-  const orderedProducts = productIds.map((id) => productMap.get(id));
+  // Bước 4: Phân trang
+  const total = allProducts.length;
+  const paginatedProducts = allProducts.slice(skip, skip + limit);
 
   return {
-    products,
-    total: (result.hits.total as any).value,
+    products: paginatedProducts,
+    total,
     currentPage: page,
-    totalPages: Math.ceil((result.hits.total as any).value / limit),
+    totalPages: Math.ceil(total / limit),
   };
 };
