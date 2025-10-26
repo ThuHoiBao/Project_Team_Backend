@@ -5,12 +5,12 @@ import { getOrdersByUser,cancelOrderController, addOrderItemsController, createC
 import { authenticateToken } from '../middleware/authenticateToken';
 
 const router = express.Router();
-
+router.post('/order/create-cod', authenticateToken, createCodOrderController);
 router.post('/', authenticateToken, addOrderItemsController);
-router.post('/create-cod', authenticateToken, createCodOrderController);
+
 
 router.post('/create-vnpay', authenticateToken, createVnpayOrderController );
-// Lấy tất cả đơn hàng của người dùng
+// Lấy tất cả đơn hàng của người dùnga
 // router.get('/orders/user/:userId', getOrdersByUser);
 // // Hủy đơn hàng
 // router.post("/orders/cancel", cancelOrderController);
