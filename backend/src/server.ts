@@ -19,6 +19,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import {seedProducts} from './seeders/product.seed.ts';
 import mongoose from 'mongoose';
+import chatRoutes from "./route/chatRoutes";  // Import routes
 import http from "http";
 import "./models/Category";
 import "./models/Product";
@@ -95,7 +96,7 @@ app.use('/api', orderRoutes);
 app.use("/api/feedback", feedbackRoute);
 app.use("/api/notifications", notificationRoutes);
 app.use('/api/cart', cartRoutes);
-
+app.use("/api/chat", chatRoutes);  // Đăng ký route
 const server = http.createServer(app);
 initSocket(server);
 
