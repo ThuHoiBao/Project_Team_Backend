@@ -415,7 +415,7 @@ export const confirmOrderPaymentService = async (orderId: string, paymentDetails
             payment: savedPayment._id as mongoose.Types.ObjectId,
             isPaid: true,
             paidAt: paymentDate,
-            orderStatus: OrderStatus.CONFIRMED,
+            orderStatus: OrderStatus.ORDERED,
             vnpTransactionNo: paymentDetails['vnp_TransactionNo'],
         };
 
@@ -574,7 +574,7 @@ export const finalizeOrderService = async (orderId: string): Promise<IOrder> => 
         let paymentStatus = false;
         let orderIsPaid = false;
         let orderPaidAt = undefined;
-        let newOrderStatus = OrderStatus.CONFIRMED;
+        let newOrderStatus = OrderStatus.ORDERED;
 
         if (order.calculatedTotalPrice === 0) {
             paymentStatus = true;
