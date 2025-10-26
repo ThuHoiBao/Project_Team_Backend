@@ -123,6 +123,7 @@ export const loginUserService = async (payload: {
   // Tìm user theo email
   const user = await findUserByEmail(email);
   if (!user) throw new Error("Không tìm thấy người dùng");
+  if(!user.status) throw new Error("Tài khoản bị cấm");
 
   // Kiểm tra mật khẩu
   const ok = await bcrypt.compare(password, user.password);
