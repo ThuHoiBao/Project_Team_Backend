@@ -5,6 +5,7 @@ import { getMyInfo, updateMyInfo, uploadMyImage } from '../controller/myAccountC
 import { logout } from '../controller/authController.ts';
 const router = express.Router();
 import { getOrdersByUser,cancelOrderController } from '../controller/orderController.ts';
+import { sendChatMessage, getChatHistory,saveSingleMessage } from "../controller/chatController";
 // Sử dụng memory storage để multer không tạo file tạm
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
@@ -21,6 +22,12 @@ router.put('/myinfo', authenticateToken, updateMyInfo);
 router.get('/orders/user',authenticateToken, getOrdersByUser);
 // Hủy đơn hàng
 router.post("/orders/cancel",authenticateToken, cancelOrderController);
+
+router.post("/chat/send-message", authenticateToken,sendChatMessage);
+
+// API lấy lịch sử trò chuyện của người dùng
+router.get("/chat/history",authenticateToken, getChatHistory);
+router.post("/chat/save-message",authenticateToken, saveSingleMessage);
 // Route upload ảnh
 router.post(
   '/myinfo/upload-image',
