@@ -21,15 +21,19 @@ export const cancelOrder = async (userId: string, orderId: string) => {
   // Nếu đơn hàng không phải COD thì hoàn coin
   if (order.payment.paymentMethod !== "COD") {
     const amount = Number(order.payment.amount) || 0;
+    const coin =Number(order.calculatedCoinsApplied) || 0;
     console.log(amount)
     if (amount > 0) {
-      const coinToAdd = amount / 1000;
+      const coinToAdd = amount / 1000 + coin;
       console.log(amount)
       await updateUserCoin(userId, coinToAdd); // Cộng coin cho user
     }
   }
-
-  // Cập nhật số lượng sản phẩm trong ProductSize
+  else{
+      const coin =Number(order.calculatedCoinsApplied) || 0;
+      const coinToAdd =  coin;
+      await updateUserCoin(userId, coinToAdd); // Cộng coin cho user
+    } 
   await updateProductSizeQuantity(order.orderItems); // Cập nhật số lượng sản phẩm trong ProductSize
 
   // Cập nhật trạng thái CANCELLED
