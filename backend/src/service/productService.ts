@@ -10,43 +10,47 @@ import mongoose, { Schema, Document, Types } from "mongoose";
 
 export const productDetailService = async (id: string) => {
   try {
-    const product = await  (Product as any).findById(id)
+    const product = await (Product as any)
+      .findById(id)
       .populate("category", "categoryName")
       .populate("listImage", "imageProduct");
 
     if (!product) {
       return {
         success: false,
-        message: "Product not found"
+        message: "Product not found",
       };
     }
+
+    // Nếu sản phẩm đã ngừng bán (status = false)
+    if (product.status === false) {
+      product.productName = `${product.productName} (Sản phẩm đã ngừng bán)`;
+    }
+
     const orderItems = await OrderItem.find({ product: id })
-      .populate("feedback").populate("order");
+      .populate("feedback")
+      .populate("order");
+
     const feedbacks = orderItems
       .map((oi) => ({
         feedback: oi.feedback,
         order: oi.order,
       }))
       .filter((f) => f.feedback != null);
-    // const orderItems = await OrderItem.find({ product: id })
-    //   .populate("feedback");
 
-
-    // const order = await OrderItem.find({ product: id }).populate("order", "user").select("id");
-
-    // const feedbacks = orderItems.map((oi) => oi.feedback).filter((fb) => fb != null);
     return {
       success: true,
       message: "Product found",
-      data: { product, feedbacks }
+      data: { product, feedbacks },
     };
   } catch (error: any) {
     return {
       success: false,
-      message: error.message
+      message: error.message,
     };
   }
 };
+
 
 
 export const findProductByCategoryIdService = async (categoryId: string, productId: string) => {
@@ -106,7 +110,7 @@ export const getSizebyProductIdService = async (id: string) => {
 export const getNewProducts = async () => {
   try {
     // Lấy 8 sản phẩm mới nhất
-    const productList = await Product.find({})
+    const productList = await Product.find({status: true})
       .sort({ createDate: -1 })
       .limit(8)
       .populate("listImage", "imageProduct")
@@ -163,7 +167,7 @@ export const getNewProducts = async () => {
 
 export const getTopSellingProducts = async () => {
   try {
-    const productList = await Product.find()
+    const productList = await Product.find({status: true})
       .populate("listImage", "imageProduct")
       .select ("productName listImage price");
     
