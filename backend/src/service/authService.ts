@@ -119,6 +119,7 @@ export const loginUserService = async (payload: { email: string; password: strin
   // Tìm user theo email
   const user = await findUserByEmail(email);
   if (!user) throw new Error("Không tìm thấy người dùng");
+  if(!user.status) throw new Error("Tài khoản bị cấm");
 
   // Kiểm tra provider Google
   if (user.provider === "google" && !user.password) {
