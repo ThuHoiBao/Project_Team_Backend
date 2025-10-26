@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import OTP from "otp-generator";
 import jwt from "jsonwebtoken";
+import { Coin } from "../models/Coin.js";
 import { RegisterUserRequestDTO } from "../dto/requestDTO/registerUserRequestDTO.ts";
 
 import {
@@ -44,6 +45,7 @@ export const registerUserService = async (dtoData: RegisterUserRequestDTO) => {
 
   // Kiểm tra email đã tồn tại
   if (await isEmailExist(trimmedEmail)) {
+
     throw new Error("Email đã được đăng ký");
   }
 
@@ -82,6 +84,10 @@ export const verifyOtpService = async (dtoData: RegisterUserRequestDTO) => {
       firstName,
       lastName,
     });
+    await Coin.create({
+      User: newUser._id,
+      value: 0,
+    });
     return {
       message: "OTP verified successfully. You can now create your account.",
     };
@@ -90,11 +96,7 @@ export const verifyOtpService = async (dtoData: RegisterUserRequestDTO) => {
   }
 };
 
-
-export const loginUserService = async (payload: {
-  email: string;
-  password: string;
-}) => {
+export const loginUserService = async (payload: { email: string; password: string }) => {
   const email = payload.email.trim();
   const password = payload.password.trim();
 
@@ -118,6 +120,11 @@ export const loginUserService = async (payload: {
   const user = await findUserByEmail(email);
   if (!user) throw new Error("Không tìm thấy người dùng");
 
+  // Kiểm tra provider Google
+  if (user.provider === "google" && !user.password) {
+    throw new Error("Account registered via Google. Please login with Google.");
+  }
+
   // Kiểm tra mật khẩu
   const ok = await bcrypt.compare(password, user.password);
   if (!ok) throw new Error("Sai mật khẩu hoặc thông tin đăng nhập");
@@ -138,6 +145,7 @@ export const loginUserService = async (payload: {
   return { token };
 };
 
+
 // Quên mật khẩu và gửi OTP
 export const forgotPasswordService = async (data) => {
   const { email } = data;
@@ -150,7 +158,7 @@ export const forgotPasswordService = async (data) => {
 
 export const resetPasswordService = async (data) => {
   const { email, password } = data;
-  
+
   const user = await findUserByEmail(email);
   if (!user) throw new Error("User not found");
 
