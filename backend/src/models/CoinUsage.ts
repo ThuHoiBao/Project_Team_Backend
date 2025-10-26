@@ -1,14 +1,14 @@
 import mongoose, { Document, Schema, Model } from "mongoose";
 
 export interface ICoinUsage extends Document {
-  user: mongoose.Types.ObjectId;
+  User: mongoose.Types.ObjectId;
   order: mongoose.Types.ObjectId;
   coinsUsed: number;
 }
 
 const CoinUsageSchema: Schema = new Schema<ICoinUsage>(
   {
-    user: {
+    User: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
@@ -42,4 +42,4 @@ CoinUsageSchema.set("toJSON", {
   },
 });
 
-export const CoinUsage = mongoose.model<ICoinUsage>("CoinUsage", CoinUsageSchema);
+export const CoinUsage = mongoose.model<ICoinUsage>("coinUsage", CoinUsageSchema);

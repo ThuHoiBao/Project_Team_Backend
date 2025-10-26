@@ -71,6 +71,10 @@ export const updateCartItemController = async (req: Request, res: Response) => {
     const { itemId } = req.params;
     const { quantity } = req.body;
 
+    console.log(`Backend: Updating Cart Item ID: ${itemId}`);
+    console.log(`Backend: For User ID: ${userId}`);
+    console.log(`Backend: New Quantity: ${quantity}`);
+
     if (!userId) return res.status(401).json({ message: 'Authentication required.' });
     if (!quantity || quantity < 1) {
         return res.status(400).json({ message: 'Invalid quantity.' });

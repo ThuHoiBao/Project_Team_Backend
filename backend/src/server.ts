@@ -1,23 +1,24 @@
 // server.js
-import express from 'express';
 import dotenv from 'dotenv';
-import connectDB from './config/configdb.ts';
-import authRoutes from './route/authRoutes.ts';
+dotenv.config();
+import express from 'express';
+import connectDB from './config/configdb';
+import authRoutes from './route/authRoutes';
 import cors from 'cors';
-import protectedRoutes from './route/protectedRoute.ts';
-import upLoadImage from './route/uploadImageRoute.ts'
-import productRoutes from './route/productRoutes.ts'
-import userRoutes from './route/userRoutes.ts'
-import orderRoutes from './route/orderRoutes.ts'
-import imageFeedbackRoutes from './route/imageFeedbackRoutes.ts'
-import feedbackRoutes from './route/feedbackRoute.ts'
-import feedbackRoute from './route/feedbackRoutes.ts'
-import categoryRoutes from './route/categoryRoutes.ts'
+import protectedRoutes from './route/protectedRoute';
+import upLoadImage from './route/uploadImageRoute'
+import productRoutes from './route/productRoutes'
+import userRoutes from './route/userRoutes'
+import orderRoutes from './route/orderRoutes'
+import imageFeedbackRoutes from './route/imageFeedbackRoutes'
+import feedbackRoutes from './route/feedbackRoute'
+import feedbackRoute from './route/feedbackRoutes'
+import categoryRoutes from './route/categoryRoutes'
 import notificationRoutes from "./route/notificationRoutes";
 import coinRoutes from "./route/coinRoutes";
 import path from 'path';
 import { fileURLToPath } from 'url';
-import {seedProducts} from './seeders/product.seed.ts';
+import {seedProducts} from './seeders/product.seed';
 import mongoose from 'mongoose';
 import http from "http";
 import "./models/Category";
@@ -26,17 +27,15 @@ import "./models/ImageProduct.ts";
 import "./models/Feedback.ts";
 import { Server } from 'http';
 import { initSocket } from "./socket";
-import cartRoutes from './route/cartRoutes.js';
+import cartRoutes from './route/cartRoutes';
 import couponRoutes from './route/couponRoutes';
-import coinRoutes from './route/coinRoutes.js';
 import addressDeliveryRoutes from './route/addressDeliveryRoutes.js';
-
-
+import paymentRoutes from './route/paymentRoutes.js';
 // Tạo __dirname (vì dùng ES module)
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-dotenv.config();
+
 connectDB();
 
 const app = express();  
@@ -98,10 +97,11 @@ app.use('/api', orderRoutes);
 app.use("/api/feedback", feedbackRoute);
 app.use("/api/notifications", notificationRoutes);
 app.use('/api/cart', cartRoutes);
+app.use('/api/coins', coinRoutes);
 app.use('/api/coupons', couponRoutes);
-app.use('/api/coins', coinRoutes); 
 app.use('/api/addresses', addressDeliveryRoutes);
-
+app.use('/api/payment', paymentRoutes);
+app.use('/api/orders', orderRoutes);
 const server = http.createServer(app);
 initSocket(server);
 
