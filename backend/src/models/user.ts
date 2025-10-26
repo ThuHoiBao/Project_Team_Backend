@@ -17,6 +17,7 @@ export interface IUser extends Document {
   gender?: boolean;
   role: EnumRole;
   image?: string;
+  status: boolean
   AddressDelivery?: mongoose.Types.ObjectId[];
   orders?: mongoose.Types.ObjectId[];
   cart?: mongoose.Types.ObjectId;

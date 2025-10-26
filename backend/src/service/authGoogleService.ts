@@ -35,7 +35,9 @@ export const googleLoginService = async (idToken: string): Promise<GoogleLoginRe
     let user = await User.findOne({
       $or: [{ googleId: sub }, { email }],
     }) as IUser | null;
-
+    if(user && !user.status){
+      return {token: "", user: user}
+    }
     if (!user) {
       user = await User.create({
         firstName: given_name,

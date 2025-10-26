@@ -20,6 +20,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import {seedProducts} from './seeders/product.seed';
 import mongoose from 'mongoose';
+import chatRoutes from "./route/chatRoutes";  // Import routes
 import http from "http";
 import "./models/Category";
 import "./models/Product";
@@ -98,6 +99,7 @@ app.use("/api/feedback", feedbackRoute);
 app.use("/api/notifications", notificationRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/coins', coinRoutes);
+app.use("/api/chat", chatRoutes);  // Đăng ký route
 app.use('/api/coupons', couponRoutes);
 app.use('/api/addresses', addressDeliveryRoutes);
 app.use('/api/payment', paymentRoutes);

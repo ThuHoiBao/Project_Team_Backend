@@ -1,5 +1,6 @@
 import { Cart } from '../models/Cart';
 import { CartItem, ICartItem } from '../models/CartItem';
+import Product from '../models/Product';
 import ProductSize from '../models/ProductSize';
 import mongoose, { PipelineStage, Types } from 'mongoose';
 
@@ -36,7 +37,21 @@ export const addToCartService = async ({ userId, productId, size, quantity }: Ad
         throw Object.assign(new Error('Product size not found.'), { status: 404 });
     }
 
-    // --- BƯỚC 3: Tìm CartItem hiện có ---
+     // --- BƯỚC 3: Kiểm tra sản phẩm ---
+    const product = await Product.findById(productId).select("productName status");
+    if (!product) {
+        throw Object.assign(new Error("Product not found."), { status: 404 });
+    }
+
+    // Nếu sản phẩm ngừng bán -> chặn thêm vào giỏ
+    if (product.status === false) {
+        throw Object.assign(
+        new Error(`${product.productName} đã ngừng bán, không thể thêm vào giỏ hàng.`),
+        { status: 400 }
+        );
+    }
+
+    // --- BƯỚC 4: Tìm CartItem hiện có ---
     let existingItem = await CartItem.findOne({
         cart: cart._id,
         product: productId,
