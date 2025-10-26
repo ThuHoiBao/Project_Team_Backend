@@ -1,9 +1,9 @@
 import express from 'express';
 import authenticateToken from '../middleware/authenticateToken.js'; 
-import { getProductPagination } from '../controller/searchController.ts';
+import { getProductPagination } from '../controller/searchController';
 import { productDetail,findProductByCategoryId, getSizebyProductId,addToWWishlist, deleteFromWishlist, 
     checkProductExistedWishlist, getWishlist, getNewProductsController, getTopSellingProductsController, filterProductsController
- } from '../controller/productController.ts';
+ } from '../controller/productController';
 
 const router = express.Router();
 

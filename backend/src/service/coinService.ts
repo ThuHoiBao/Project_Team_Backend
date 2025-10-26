@@ -1,6 +1,9 @@
 import { Coin } from '../models/Coin';
 
 export const getCoinBalanceForUser = async (userId: string): Promise<number> => {
+    if (!userId) {
+        throw new Error('User ID is required to fetch coin balance.');
+    }
     try {
         const coinBalanceDoc = await Coin.findOne({ User: userId });
 
