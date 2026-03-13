@@ -19,6 +19,7 @@ export function initSocket(server: http.Server) {
     socket.on("register", (userId: string) => {
       (global as any).userSocketMap[userId] = socket.id;
       console.log(`📡 User ${userId} registered with socket ${socket.id}`);
+      socket.emit("welcome", { message: "Chào mừng bạn đã kết nối!" });
     });
 
     socket.on("disconnect", () => {
