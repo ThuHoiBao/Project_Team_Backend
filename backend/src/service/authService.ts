@@ -3,6 +3,7 @@ import OTP from "otp-generator";
 import jwt from "jsonwebtoken";
 import { Coin } from "../models/Coin.js";
 import { RegisterUserRequestDTO } from "../dto/requestDTO/registerUserRequestDTO.ts";
+import Notification from "../models/Notification.js";
 
 import {
   isEmailExist,
@@ -87,6 +88,13 @@ export const verifyOtpService = async (dtoData: RegisterUserRequestDTO) => {
     await Coin.create({
       User: newUser._id,
       value: 0,
+    });
+    await Notification.create({
+      userId: newUser._id,
+      title: "Chào mừng đến với cửa hàng!",
+      message: `Xin chào ${firstName}, cảm ơn bạn đã đăng ký tài khoản. Chúc bạn mua sắm vui vẻ!`,
+      type: "info",
+      isRead: false,
     });
     return {
       message: "OTP verified successfully. You can now create your account.",
